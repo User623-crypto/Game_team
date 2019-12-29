@@ -45,7 +45,7 @@ public class GameObject {
     }
     public  void  move_left()
     {
-        pos_X -=30;
+        pos_X -=15;
     }
     public  void  move_up()
     {

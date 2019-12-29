@@ -3,12 +3,16 @@ package com.example.myapplication;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 
 public class Player {
     public int pos_X;
     public int pos_Y;
     private int width;
     private int height;
+
+    private Game gameview;
 
 
     //Jump
@@ -20,28 +24,54 @@ public class Player {
     private int image_turn = 1;
     private boolean move_left;
     private boolean move_up;
-    Bitmap player_bitmap,player_walk1,player_walk2;
-
-    public Player(int _X, int _Y, int _width, int _height, Resources res)
+    //Bitmap player_bitmap,player_walk1,player_walk2,walk1_reverse,walk2_reverse;
+        Bitmap sprite,reverse_sprite;
+    //private Bitmap[] right_anim;
+    //private Bitmap[] left_anim;
+    //private Bitmap[] jump_anim;
+    public Player(int width,int height,Resources res)
     {
+        this.width = width;
+        this.height = height;
+        sprite = BitmapFactory.decodeResource(res,R.drawable.left_to_right);
+        sprite = Bitmap.createScaledBitmap(sprite,width,height,false);
+        reverse_sprite = BitmapFactory.decodeResource(res,R.drawable.running_glitch_left);
+        reverse_sprite = Bitmap.createScaledBitmap(sprite,width,height,false);
+    }
+    //public Player(int _X, int _Y, int _width, int _height, Resources res)
+    //{
+
+       /*
         this.pos_X = _X;
         this.pos_Y = _Y;
         this.width = _width;
         this.height = _height;
 
         player_bitmap = BitmapFactory.decodeResource(res,R.drawable.alienblue);
+        //sprite = new Sprite(player_bitmap);
         player_walk1 = BitmapFactory.decodeResource(res,R.drawable.alien_walk1);
         player_walk2 = BitmapFactory.decodeResource(res,R.drawable.alien_walk2);
+        walk1_reverse = BitmapFactory.decodeResource(res,R.drawable.alien_walk1_reverse);
+        walk2_reverse = BitmapFactory.decodeResource(res,R.drawable.alien_walk2_reverse);
 
         player_bitmap = Bitmap.createScaledBitmap(player_bitmap,width,height,false);
         player_walk1 = Bitmap.createScaledBitmap(player_walk1,width,height,false);
         player_walk2 = Bitmap.createScaledBitmap(player_walk2,width,height,false);
+        walk1_reverse = Bitmap.createScaledBitmap(player_walk1,width,height,false);
+        walk2_reverse = Bitmap.createScaledBitmap(player_walk2,width,height,false);
 
-        this.holding=pos_Y;
+        right_anim = new Bitmap[]{player_walk1,player_walk1,player_walk2,player_walk2};
+        left_anim = new Bitmap[]{walk1_reverse,walk1_reverse,walk2_reverse,walk2_reverse};
+        //jump_anim = new Bitmap[]{}
+        */
 
-    }
 
 
+
+    //}
+
+
+   /*
     public boolean to_left()
     {
         if(pos_X < 11)
@@ -124,6 +154,8 @@ public class Player {
     {
         return player_bitmap.getHeight();
     }
+    */
+    /*
     Bitmap getImage()
     {
         if(image_turn == 1)
@@ -151,12 +183,56 @@ public class Player {
             return player_walk2;
 
         }
+        if(image_turn == 5)
+        {
+            image_turn ++;
+            return player_walk2;
+
+        }
+        if(image_turn == 6)
+        {
+            image_turn ++;
+            return walk1_reverse;
+
+        }
+        if(image_turn == 7)
+        {
+            image_turn ++;
+            return walk1_reverse;
+
+        }
+
+        if(image_turn == 8)
+        {
+            image_turn ++;
+            return walk2_reverse;
+
+        }
+
         image_turn = 1;
-        return player_walk2;
+        return walk2_reverse;
+    }
+     */
+
+
+
+
+   /*
+    public void start_right_anim(Canvas canvas)
+    {
+       for(int i =0;i<right_anim.length;i++)
+       {
+           canvas.drawBitmap(right_anim[i],pos_X,pos_Y,null);
+       }
     }
 
+    public void start_left_anim(Canvas canvas)
+    {
+        for(int i =0;i<left_anim.length;i++)
+        {
+            canvas.drawBitmap(left_anim[i],pos_X,pos_Y,null);
+        }
+    }
 
-
-
-
+    */
 }
