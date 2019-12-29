@@ -55,4 +55,5 @@ public class GameObject {
     {
         pos_Y +=5;
     }
+
 }
