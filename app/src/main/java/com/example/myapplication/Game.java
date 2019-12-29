@@ -14,9 +14,9 @@ public class Game extends SurfaceView  implements Runnable{
     //Sprite sheet
     private boolean isMoving;
     private float runSpeedPerSecond = 200;
-    private float playerXpos = 100;//poszicioni i x ku nis levizja
-    private float playerYpos = 100;//poszicioni i y ku nis levizja
-    private int frameWidth = 180,frameHeight = 260;
+    private float playerXpos;//poszicioni i x ku nis levizja
+    private float playerYpos;//poszicioni i y ku nis levizja
+    public static int frameWidth = 180,frameHeight = 260;
     private int frameCount = 24; //Ndahet  Spritesheet ne 12 pjese te barabarta
     private int currentFrame = 12;
     private long fps;
@@ -43,17 +43,10 @@ public class Game extends SurfaceView  implements Runnable{
     private boolean moveLeft;
     //Per te bere background to move.
     private Background background1,background2;
-    private Player[] players;
-    private Player test_player;
+
     private Player my_player;
-   // private Sprite sprite;
-
-
-
     //Create object
     private GameObject my_wall,my_wall1;
-
-
     //Create an array to hold all object.
     GameObject[] object_array;
     public  Game(Context context,int screenX,int screenY)
@@ -78,21 +71,10 @@ public class Game extends SurfaceView  implements Runnable{
         my_wall1 = new GameObject(1900,500,900,100,getResources());
 
 
-        my_player = new Player(frameWidth*frameCount,frameHeight,getResources());//Frame count duhet .
+        my_player = new Player(100,100,frameWidth*frameCount,frameHeight,getResources());//Frame count duhet .
 
-        /*
-        players = new Player[9];
-        for(int i =0;i<players.length;i++)
-        {
-            Player player = new Player(100,400,100,100,getResources());
-            players[i] = player;
-        }
-        test_player = players[0];
-
-         */
-        //player = new Player(100,400,100,100,getResources());
-
-
+        playerXpos = my_player.player_X();
+        playerYpos = my_player.player_Y();
         object_array = new GameObject[] {my_wall,my_wall1};
         paint = new Paint();
     }
@@ -286,14 +268,6 @@ public class Game extends SurfaceView  implements Runnable{
         }
     }
 
-    private void sleep()
-    {
-        try {
-            Thread.sleep(35);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 
 
 
@@ -307,15 +281,7 @@ public class Game extends SurfaceView  implements Runnable{
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
-        /*
-        switch (event.getAction() & MotionEvent.ACTION_MASK)
-        {
-            case MotionEvent.ACTION_DOWN:
-                isMoving = !isMoving;
-                break;
-        }
-        return true;
-         */
+
 
         //If the user Touches the screen
         if(event.getAction()!=MotionEvent.ACTION_UP)

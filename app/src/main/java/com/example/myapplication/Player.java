@@ -7,8 +7,8 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 
 public class Player {
-    public int pos_X;
-    public int pos_Y;
+    private int pos_X;
+    private int pos_Y;
     private int width;
     private int height;
 
@@ -24,13 +24,13 @@ public class Player {
     private int image_turn = 1;
     private boolean move_left;
     private boolean move_up;
-    //Bitmap player_bitmap,player_walk1,player_walk2,walk1_reverse,walk2_reverse;
-        Bitmap sprite,reverse_sprite;
-    //private Bitmap[] right_anim;
-    //private Bitmap[] left_anim;
-    //private Bitmap[] jump_anim;
-    public Player(int width,int height,Resources res)
+
+    Bitmap sprite,reverse_sprite;
+
+    public Player(int _X,int _Y,int width,int height,Resources res)
     {
+        this.pos_X = _X;
+        this.pos_Y = _Y;
         this.width = width;
         this.height = height;
         sprite = BitmapFactory.decodeResource(res,R.drawable.left_to_right);
@@ -70,8 +70,6 @@ public class Player {
 
     //}
 
-
-   /*
     public boolean to_left()
     {
         if(pos_X < 11)
@@ -90,7 +88,7 @@ public class Player {
 
     public  boolean to_bottom()
     {
-        if(pos_Y > player_bitmap.getHeight() - 11)
+        if(pos_Y > sprite.getHeight() - 11)
             return false;
         return true;
     }
@@ -99,6 +97,10 @@ public class Player {
     {
         return pos_X;
 
+    }
+    public  int player_Y()
+    {
+        return pos_Y;
     }
 
     public void jump()
@@ -116,11 +118,6 @@ public class Player {
         else {
             finishjumping=false;_jumppower=5;
         }
-    }
-
-    public  int player_Y()
-    {
-        return pos_Y;
     }
 
     public  void move_right()
@@ -148,91 +145,11 @@ public class Player {
 
     public int player_width()
     {
-        return player_bitmap.getWidth();
+        return Game.frameWidth;
     }
     public int player_height()
     {
-        return player_bitmap.getHeight();
-    }
-    */
-    /*
-    Bitmap getImage()
-    {
-        if(image_turn == 1)
-        {
-            image_turn++;
-            return player_bitmap;
-
-        }
-        if(image_turn == 2)
-        {
-            image_turn ++;
-            return player_walk1;
-
-        }
-        if(image_turn == 3)
-        {
-            image_turn ++;
-            return player_walk1;
-
-        }
-
-        if(image_turn == 4)
-        {
-            image_turn ++;
-            return player_walk2;
-
-        }
-        if(image_turn == 5)
-        {
-            image_turn ++;
-            return player_walk2;
-
-        }
-        if(image_turn == 6)
-        {
-            image_turn ++;
-            return walk1_reverse;
-
-        }
-        if(image_turn == 7)
-        {
-            image_turn ++;
-            return walk1_reverse;
-
-        }
-
-        if(image_turn == 8)
-        {
-            image_turn ++;
-            return walk2_reverse;
-
-        }
-
-        image_turn = 1;
-        return walk2_reverse;
-    }
-     */
-
-
-
-
-   /*
-    public void start_right_anim(Canvas canvas)
-    {
-       for(int i =0;i<right_anim.length;i++)
-       {
-           canvas.drawBitmap(right_anim[i],pos_X,pos_Y,null);
-       }
+        return Game.frameHeight;
     }
 
-    public void start_left_anim(Canvas canvas)
-    {
-        for(int i =0;i<left_anim.length;i++)
-        {
-            canvas.drawBitmap(left_anim[i],pos_X,pos_Y,null);
-        }
-    }
-
-    */
 }

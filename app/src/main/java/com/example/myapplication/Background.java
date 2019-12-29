@@ -34,6 +34,15 @@ public class Background {
 
     }
 
+    public int background_X()
+    {
+        return x;
+    }
+    public int background_Y()
+    {
+        return y;
+    }
+
 
 
 
