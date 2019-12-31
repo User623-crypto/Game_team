@@ -56,4 +56,11 @@ public class GameObject {
         pos_Y +=5;
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
 }

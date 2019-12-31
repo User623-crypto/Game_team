@@ -14,6 +14,8 @@ public class Background {
     Bitmap my_background;
     Bitmap my_reverse_background;
     private int count =1;
+    private int width;
+    private int screenX;
 
 
     //drawble variable set image name...
@@ -22,6 +24,7 @@ public class Background {
     {
         this._drawable = _drawable;
         //Rresources res -> Perdoret per ti bere decode bitmapit
+        this.screenX=screenX;
 
         my_background = BitmapFactory.decodeResource(res,_drawable);
         //my_reverse_background = BitmapFactory.decodeResource(res,idle_reverse);
@@ -30,6 +33,7 @@ public class Background {
         my_background = Bitmap.createScaledBitmap(my_background,screenX,screenY,false);
         //my_reverse_background = Bitmap.createScaledBitmap(my_reverse_background,screenX,screenY,false);
         BACKGROUND_HEIGHT = my_background.getHeight();
+        width=my_background.getWidth();
 
 
     }
@@ -42,6 +46,25 @@ public class Background {
     {
         return y;
     }
+
+    public void updateRight(int a)
+    {
+        if (a < BACKGROUND_HEIGHT/2) {
+            x -= 10;
+
+        }
+
+        if (a > BACKGROUND_HEIGHT/2) {
+            x -= 12;
+
+        }
+        if (x + width < 0) {
+            //call background 1
+            x = screenX + 5;
+        }
+
+    }
+
 
 
 

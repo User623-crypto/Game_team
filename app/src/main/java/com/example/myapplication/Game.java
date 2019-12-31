@@ -5,14 +5,16 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 
 public class Game extends SurfaceView  implements Runnable{
-
-
+      /*******************************************************************/
+      private int control=5;
+/*************************************************************************/
     //Sprite sheet
-    private boolean isMoving;
+    private boolean isMoving=true;
     private float runSpeedPerSecond = 200;
     private float playerXpos;//poszicioni i x ku nis levizja
     private float playerYpos;//poszicioni i y ku nis levizja
@@ -67,8 +69,8 @@ public class Game extends SurfaceView  implements Runnable{
         background2.x = screenX;
 
 
-        my_wall = new GameObject(900,500,900,100,getResources());
-        my_wall1 = new GameObject(1900,500,900,100,getResources());
+        my_wall = new GameObject(500,1080-100,900,100,getResources());
+        my_wall1 = new GameObject(800,600,900,100,getResources());
 
 
         my_player = new Player(100,100,frameWidth*frameCount,frameHeight,getResources());//Frame count duhet .
@@ -104,14 +106,24 @@ public class Game extends SurfaceView  implements Runnable{
         {
             long startFrameTime = System.currentTimeMillis();
 
-            update();
+
             draw();
+            update();
             timeThisFrame = System.currentTimeMillis() - startFrameTime;
             if(timeThisFrame >=1)
             {
-                fps = 1000/timeThisFrame;
+
+               fps = 1000/timeThisFrame;
+
+
+
             }
-            //sleep();
+            try {
+                game_thread.sleep(7);
+            }catch (Exception e){}
+
+
+
         }
     }
 
@@ -164,43 +176,45 @@ public class Game extends SurfaceView  implements Runnable{
 
     private  void update()
     {
-        if(moveRight == true)
+
+        my_player.playerUpdate(object_array,5);
+        if(moveRight)
         {
-            for(int i = 0;i<object_array.length;i++)
-            {
-                object_array[i].move_left();
-            }
-            playerXpos = playerXpos + runSpeedPerSecond/fps;
+            my_player.playerUpdate(object_array,1);
 
-            if(playerXpos < background1.my_background.getHeight()/2)
-            {
-                background1.x -= 10;
-                background2.x -= 10;
+            if(my_player.didMoveRight()) {
+                for (int i = 0; i < object_array.length; i++) {
+                    object_array[i].move_left();
+                }
+                background1.updateRight(my_player.player_X());
+                background2.updateRight(my_player.player_X());
+                /*if (my_player.player_X() < background1.my_background.getHeight() / 2) {
+                    background1.x -= 10;
+                    background2.x -= 10;
+                }
+
+                if (my_player.player_X() > background1.my_background.getHeight() / 2) {
+                    background1.x -= 12;
+                    background2.x -= 12;
+                }
+                if (background1.x + background1.my_background.getWidth() < 0) {
+                    //call background 1
+                    background1.x = screenX + 5;
+                }
+                if (background2.x + background2.my_background.getWidth() < 0) {
+                    //call background 1
+                    background2.x = screenX + 5;
+                }*/
             }
 
-            if(playerXpos > background1.my_background.getHeight()/2)
-            {
-                background1.x -= 12;
-                background2.x -= 12;
-            }
-            if (background1.x + background1.my_background.getWidth() < 0) {
-                //call background 1
-                background1.x = screenX  + 5;
-            }
-            if (background2.x + background2.my_background.getWidth() < 0) {
-                //call background 1
-                background2.x = screenX + 5;
-            }
+        }else if(moveLeft) {
 
-        }
-
-
-        if(moveLeft == true && playerXpos > 11) {
+            my_player.playerUpdate(object_array,2);
 
             for (int i = 0; i < object_array.length; i++) {
-                // object_array[i].move_right();
+                //object_array[i].move_right();
             }
-            playerXpos = playerXpos - runSpeedPerSecond/fps;
+
         }
 
 
@@ -209,8 +223,7 @@ public class Game extends SurfaceView  implements Runnable{
         //Per te leviz poshte
 
         /*
-        if(playerXpos + 100< background1.my_background.getHeight()/2)
-        {
+         {
 
             playerYpos -= 10;
 
@@ -248,22 +261,27 @@ public class Game extends SurfaceView  implements Runnable{
         if(getHolder().getSurface().isValid()) //if surface view is initiated
         {
             Canvas canvas = getHolder().lockCanvas();//return the current canvas displayed on the screen
-            canvas.drawBitmap(background1.my_background,background1.x,background1.y,paint);
-            canvas.drawBitmap(background2.my_background,background2.x,background2.y,paint);
 
+            synchronized (canvas) {
 
+                canvas.drawBitmap(background1.my_background, background1.x, background1.y, paint);
+                canvas.drawBitmap(background2.my_background, background2.x, background2.y, paint);
+
+            /*
         //Draw anim
-            wheretoDraw.set((int)playerXpos,(int)playerYpos,(int)playerXpos  + frameWidth,(int)playerYpos + frameHeight);
+            //wheretoDraw.set((int)playerXpos,(int)playerYpos,(int)playerXpos  + frameWidth,(int)playerYpos + frameHeight);
 
             //draw every frame on screen
-            manageCurrentFrame();
-            canvas.drawBitmap(my_player.sprite,frametoDraw,wheretoDraw,null);
+            //manageCurrentFrame();
+            //canvas.drawBitmap(my_player.sprite,frametoDraw,wheretoDraw,null);*/
+                my_player.draw(canvas);
 
 
-            //draw wall
-            canvas.drawBitmap(my_wall.object,my_wall.Object_X(),my_wall.Object_Y(),paint);
-            canvas.drawBitmap(my_wall1.object,my_wall1.Object_X(),my_wall1.Object_Y(),paint);
-            //canvas ready to show on scrreen
+                //draw wall
+                canvas.drawBitmap(my_wall.object, my_wall.Object_X(), my_wall.Object_Y(), paint);
+                canvas.drawBitmap(my_wall1.object, my_wall1.Object_X(), my_wall1.Object_Y(), paint);
+                //canvas ready to show on scrreen
+            }
             getHolder().unlockCanvasAndPost(canvas);
         }
     }
@@ -288,20 +306,24 @@ public class Game extends SurfaceView  implements Runnable{
         {
 
             if((int)event.getX()>this.getWidth()/2)
-            {moveRight=true;
-                isMoving = true;
-                moveLeft = false;
+            {moveRight=true;//my_player.moveRight=true;
+
+                isMoving = true;//my_player.isMoving=true;
+                moveLeft = false;//my_player.moveLeft=false;
+                control=1;
                 }
 
             if((int)event.getX()<=this.getWidth()/2)
-            {moveLeft=true;
-                isMoving = true;
-                moveRight = false;
+            {
+                moveLeft=true;//my_player.moveLeft=true;
+                isMoving=true;//my_player.isMoving=true;
+                moveRight=false;//my_player.moveRight=false;
+                control=2;
             }
             return true;
         }
-        else {moveRight=false;moveLeft=false;
-                currentFrame  = 13;
+        else {moveRight=false;moveLeft=false;control=5; //my_player.moveRight=false;my_player.moveLeft=false;
+            // currentFrame  = 13;
             return false;}
 
     }
