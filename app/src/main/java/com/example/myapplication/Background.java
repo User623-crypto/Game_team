@@ -20,6 +20,8 @@ public class Background {
 
     Background(int screenX, int screenY, Resources res,int _drawable)
     {
+
+
         this._drawable = _drawable;
         //Rresources res -> Perdoret per ti bere decode bitmapit
 
@@ -44,8 +46,27 @@ public class Background {
     }
 
 
+    public void update_bakground(int x_amount,int y_amount,Player player)
+    {
+
+           if(Game.moveRight == true)
+               x = x - x_amount - 10;
+           if(Game.moveLeft == true && player.player_x() > 10)
+               x = x - x_amount + 10;
+
+
+           //Per te levizur kamera vertikalisht
+        if(y != 0 && y > -500 && y < 300)
+        {
+
+                y = y - y_amount;
+
+
+        }
 
 
 
+
+}
 
 }

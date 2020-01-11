@@ -56,4 +56,24 @@ public class GameObject {
         pos_Y +=5;
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void update_object(int x_amount,int y_amount,Player player)
+    {
+        if(Game.moveRight == true) {
+            pos_X = pos_X - x_amount - 10;
+        }
+        if(Game.moveLeft == true) {
+            pos_X = pos_X - x_amount + 10;
+        }
+
+        if(Player.isMovingDown == true && player.player_y() > 210)
+            pos_Y = pos_Y - y_amount;
+    }
 }
