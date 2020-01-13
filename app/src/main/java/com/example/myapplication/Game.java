@@ -1,14 +1,13 @@
 package com.example.myapplication;
 
 import android.content.Context;
-import android.content.res.Resources;
+
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.Log;
+
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 
-import androidx.core.view.MotionEventCompat;
 
 public class Game extends SurfaceView  implements Runnable{
 
@@ -29,15 +28,17 @@ public class Game extends SurfaceView  implements Runnable{
     private Background background1,background2;
 
     private Player my_player;
-    private int drawable = R.drawable.left_to_right;
+
     //Create object
     private GameObject my_wall,my_wall1,my_wall2,my_wall3,my_wall4,my_wall5,my_wall6,my_wall7,my_wall8,my_wall9;
+    private GameObject divan1,chair1;
     //Create an array to hold all object.
     GameObject[] object_array;
 
 
     //Krijo spriteSHeet
     private  spriteSheet player_animation;
+
 
     //Krijo buttonat
     private Button left_button,right_button,up_button,down_button;
@@ -49,18 +50,14 @@ public class Game extends SurfaceView  implements Runnable{
         this.screenX = screenX;
         this.screenY = screenY;
 
-        ratio_X = 720f / screenX;
-        ratio_Y = 1280f / screenY;
+        ratio_X = 1280f / screenX;
+        ratio_Y = 720f / screenY;
 
         background1 = new Background(5*screenX,2*screenY,getResources(),R.drawable.game_background);
-        //background2 = new Background(3*screenX,2*screenY,getResources(),R.drawable.game_background);
-
-        //Background 2 nuk do te shfaqet ne ekran por ai do te jete pas background 1
-
-        //background2.x = 5*screenX;
 
 
-        my_wall = new GameObject(50,500,900,60,getResources());
+        my_wall = new GameObject(50,500,900,60,getResources(),R.drawable.wall);
+        /*
         my_wall1 = new GameObject(950,300,900,60,getResources());
         my_wall2 = new GameObject(1850,500,900,60,getResources());
         my_wall3 = new GameObject(2800,500,900,60,getResources());
@@ -71,8 +68,11 @@ public class Game extends SurfaceView  implements Runnable{
         my_wall7 = new GameObject(4700,300,150,60,getResources());
         my_wall8 = new GameObject(5000,200,50,60,getResources());
         my_wall9 = new GameObject(5400,500,500,60,getResources());
+         */
 
-
+    //Enter divan
+        divan1 = new GameObject(50,500,400,200,getResources(),R.drawable.divan);
+        chair1 = new GameObject(500,600,120,100,getResources(),R.drawable.chair3_front);
 
         //Shto buttonat
         left_button = new Button(150,500,150,150,getResources(),R.drawable.leftarray);
@@ -88,7 +88,7 @@ public class Game extends SurfaceView  implements Runnable{
 
         my_player = new Player((int)player_animation.X_pos(),(int)player_animation.Y_pos(), 24 * player_animation.width(),player_animation.height(),getResources(),R.drawable.left_to_right,player_animation);//Frame count duhet .
 
-        object_array = new GameObject[] {my_wall,my_wall1,my_wall2,my_wall3,my_wall4,my_wall5,my_wall6,my_wall7,my_wall8,my_wall9};
+        object_array = new GameObject[] {divan1,chair1};
         paint = new Paint();
     }
 
@@ -114,14 +114,6 @@ public class Game extends SurfaceView  implements Runnable{
         }
     }
 
-    public void sleep()
-    {
-        try {
-            game_thread.sleep(50);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
     public  void pause()
     {
         try {
@@ -140,32 +132,19 @@ public class Game extends SurfaceView  implements Runnable{
         float before_posY = my_player.player_y();
 
 
-        my_player.playerUpdate(object_array,getResources());
+
         float after_posX = my_player.player_x();
         float after_posY = my_player.player_y();
 
         int X_amount = (int)(after_posX - before_posX);
         int Y_amount = (int)(after_posY - before_posY);
-        background1.update_bakground(X_amount,Y_amount,my_player);
+        //background1.update_bakground(X_amount,Y_amount,my_player);
         //background2.update_bakground(X_amount,Y_amount,my_player);
         for(int i = 0;i<object_array.length;i++)
-        {
             object_array[i].update_object(X_amount,Y_amount,my_player);
 
-        }
 
-
-        /*
-        if (background1.x + background1.my_background.getWidth() < 0) {
-            //call background 1
-            background1.x = screenX  + 5;
-        }
-        if (background2.x + background2.my_background.getWidth() < 0) {
-            //call background 1
-            background2.x = screenX + 5;
-        }
-         */
-
+        my_player.playerUpdate(object_array,getResources());
 
     }
 
@@ -179,6 +158,7 @@ public class Game extends SurfaceView  implements Runnable{
 
 
         //Draw anim
+/*
 
 
             player_animation.manageCurrentFrame();
@@ -186,28 +166,23 @@ public class Game extends SurfaceView  implements Runnable{
             //draw every frame on screen
 
             canvas.drawBitmap(my_player.sprite,player_animation.frametoDraw(),player_animation.wheretoDraw(),null);
+ */
 
+//Draw i Roelit :)
+            my_player.draw(canvas);
 
             //draw wall
             for(int i = 0;i<object_array.length;i++)
-            {
+
                 canvas.drawBitmap(object_array[i].object,object_array[i].Object_X(),object_array[i].Object_Y(),paint);
-            }
 
 
             //draw buttons
             for(int i = 0;i<button_array.length;i++)
-            {
                 canvas.drawBitmap(button_array[i].button,button_array[i].button_X(),button_array[i].button_Y(),null);
-            }
             //canvas ready to show on scrreen
             getHolder().unlockCanvasAndPost(canvas);
         }
-    }
-
-    public  boolean isPlaying()
-    {
-        return isPlaying;
     }
 
     //Calls eventListener on Touch for Testing
@@ -232,19 +207,21 @@ public class Game extends SurfaceView  implements Runnable{
 
                         moveLeft = true;
                         moveRight = false;
+
     }
                     else if (right_button.touched((int) event.getX(0), (int) event.getY(0))) {
 
 
                         moveRight = true;
                         moveLeft = false;
+
                     }
                     else if (up_button.touched((int) event.getX(0), (int) event.getY(0))) {
 
                         moveRight = false;
                         moveUp = true;
                         moveLeft = false;
-                        //Log.d("myTag","Up u shtyp");
+
                     }
 
                 }
@@ -253,6 +230,7 @@ public class Game extends SurfaceView  implements Runnable{
                     moveUp = false;
                     moveLeft = false;
                     moveRight = false;
+
                 }
             }
             else if(pointerId == 1)
@@ -262,6 +240,7 @@ public class Game extends SurfaceView  implements Runnable{
                     if(up_button.touched((int)event.getX(i),(int)event.getY(i)))
                     {
                         moveUp = true;
+
                     }
                 }
             }

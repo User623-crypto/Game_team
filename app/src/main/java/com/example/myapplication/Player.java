@@ -3,7 +3,11 @@ package com.example.myapplication;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.util.Log;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.example.myapplication.R.drawable.*;
 
@@ -12,7 +16,7 @@ public class Player {
 
     /*************************************Pjesa e Perplasjes***********************************/
     //????
-    int nr_i_vektorit=0;
+    private int nr_i_vektorit = 0;
     private  final int tolerance_range=-37;//Marzh gabimi
     private final int tolerance_rangeY=2;
     /*********************Pas Kesaj Punon*******************************************************/
@@ -29,7 +33,10 @@ public class Player {
     private boolean didMoveLeft=false;
     private int jumpCount=0;
 
-    private int _velocityX=15;
+    private int _velocityX=130;
+    private int _velocityY = 700;
+    static float acceleration = 1;
+    static float move_angle = 0;
 
     private float pos_X;
     private float pos_Y;
@@ -81,7 +88,7 @@ public class Player {
         return  didMoveLeft;
     }
 
-    public void fall(GameObject gameObject[])
+    private void fall(GameObject gameObject[])
     {
         if(this.pos_Y+height<800  && !checkObjcollisionDown(gameObject))
         {
@@ -103,6 +110,7 @@ public class Player {
          */
     }
 
+   /*
     public void jump()
     {
         jumpCount=1;
@@ -113,56 +121,49 @@ public class Player {
             this.pos_Y= this.pos_Y - (velocityY - (2*gravity));
 
     }
-
-    public  void move_right(GameObject gameObject[],int X_velocity)
+    */
+    public  void move_right(GameObject gameObject[],int X_velocity,float angle)
     {
-
-
-        Log.d("my_tag", "X_POS : "+ this.pos_X);
-        Log.d("my_tag", "X_POS_SPRITESHEET : "+ _spriteSheet.X_pos());
-        Log.d("my_tag", "X_POS_player_x() : "+ player_x());
+        Log.d("my_tag", "ACCELERATION: " + this.acceleration);
 
         if(!checkObjcollisionRight(gameObject))
         {
-            this.pos_X = this.pos_X + X_velocity/(int)_spriteSheet.fps;
+
+            this.pos_X = this.pos_X + (float)(X_velocity/(int)_spriteSheet.fps*Math.cos(Math.toRadians((double)angle)));
+            //this.pos_Y = this.pos_Y - (float)(100/(int)_spriteSheet.fps*Math.sin(Math.toRadians((double)angle)));
             _spriteSheet.set_X_pos(this.pos_X);
+            //_spriteSheet.set_X_pos(this.pos_Y);
 
         }
     }
-    public  void  move_left(GameObject gameObject[],int X_velocity)
+    public  void  move_left(final GameObject gameObject[],int X_velocity)
     {
-        /*
-        Log.d("my_tag", "X_POS : "+ this.pos_X);
-        Log.d("my_tag", "X_POS_SPRITESHEET : "+ _spriteSheet.X_pos());
-         */
+
         if(!checkObjcollisionLeft(gameObject))
         {
-            Log.d("my_tag", "move_left: true");
+
             this.pos_X = this.pos_X - X_velocity/(int)_spriteSheet.fps;
             _spriteSheet.set_X_pos(this.pos_X);
 
         }
-        else
-            Log.d("my_tag", "move_left: false");
-
     }
     public void my_jump(GameObject gameObject[])
     {
 
-                this.pos_Y = this.pos_Y - 800 / _spriteSheet.fps;
+                this.pos_Y = this.pos_Y - _velocityY / _spriteSheet.fps;
                 _spriteSheet.set_Y_pos(this.pos_Y);
 
     }
     public  void move_up_right(GameObject gameObject[])
     {
                 my_jump(gameObject);
-                move_right(gameObject,100);
+                move_right(gameObject,_velocityX,0);
 
     }
     public  void move_up_left(GameObject gameObject[])
     {
         my_jump(gameObject);
-        move_left(gameObject,100);
+        move_left(gameObject,_velocityX);
     }
 
     public int player_width()
@@ -198,10 +199,24 @@ public class Player {
     }
 
 
-
-    public void playerUpdate(GameObject gameObject[],Resources res)
+    public void draw(Canvas canvas)
     {
-        long my_time = System.currentTimeMillis();
+
+
+        //Draw anim
+        _spriteSheet.wheretoDraw().set((int)this.pos_X,(int)this.pos_Y,(int)this.pos_X  + _spriteSheet.width(),(int)this.pos_Y + _spriteSheet.height());
+
+        //draw every frame on screen
+        _spriteSheet.manageCurrentFrame();
+
+        //nuk e vizaton gjitheimazhin per nje pjese te saj
+        canvas.drawBitmap(this.sprite,_spriteSheet.frametoDraw(),_spriteSheet.wheretoDraw(),null);
+
+
+    }
+
+    public void playerUpdate(final GameObject gameObject[], Resources res)
+    {
 
         if(Game.moveRight == true && Game.moveUp == true)
         {
@@ -214,15 +229,7 @@ public class Player {
             }
 
             move_up_right(gameObject);
-          /*
-            if(!checkObjcollisionRight(gameObject))
-                    move_up_right(gameObject);
-            if(System.currentTimeMillis() - my_time > 200)
-            {
-                Game.moveUp = false;
-                Game.moveRight = true;
-            }
-           */
+
         }
 
         else if(Game.moveLeft == true && Game.moveUp == true)
@@ -254,11 +261,12 @@ public class Player {
                 this.drawable_image = left_to_right;
                 make_decode(res,drawable_image);
             }
-            move_right(gameObject,100);
-             if(System.currentTimeMillis() - my_time > 500)
-             {
-                 move_right(gameObject,300);
-             }
+
+            move_right(gameObject,100,30);
+
+
+
+
         }
 
         else if(Game.moveLeft == true && Game.moveUp == false) {
@@ -272,9 +280,18 @@ public class Player {
             }
 
             move_left(gameObject,100);
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    // this code will be executed after 2 seconds
+                    Log.d("my_tag", "AFTER 2 seconds : LEFT ");
+                    move_left(gameObject,350);
+                }
+            }, 5000);
         }
         else if(Game.moveRight == false && Game.moveLeft == false && Game.moveUp == false)
         {
+            acceleration = 1;
             if(this.drawable_image != left_to_right)
             {
                 _spriteSheet.setCurrentframe(11);
@@ -292,7 +309,7 @@ public class Player {
     /*******************************Deri Ketu Funksiononte**********************************/
 
     /*******************************OBJECT COLLISON CHECK ******************************************************/
-    public boolean checkleft( GameObject a )
+    public boolean checkleft(GameObject a)
     {
         if(((this.pos_X <= (a.Object_X() + a.getWidth() + tolerance_range)) || ((this.pos_X + tolerance_range) > a.Object_X())) && (((this.pos_Y + this.height) > a.Object_Y()) || (this.pos_Y < (a.Object_Y() + a.getHeight()))))
             return true;

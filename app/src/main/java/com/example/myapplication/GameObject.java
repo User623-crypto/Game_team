@@ -11,18 +11,21 @@ public class GameObject {
     private  int width;
     private int height;
 
+    private int drawable;
+
 
     Bitmap object;
     //Constructor;
 
-    public  GameObject(int _X, int _Y, int _width, int _height, Resources res)
+    public  GameObject(int _X, int _Y, int _width, int _height, Resources res,int _drawable)
     {
         this.pos_X = _X;
         this.pos_Y = _Y;
         this.width = _width;
         this.height = _height;
 
-        object = BitmapFactory.decodeResource(res,R.drawable.wall);
+        this.drawable = _drawable;
+        object = BitmapFactory.decodeResource(res,drawable);
 
         object = Bitmap.createScaledBitmap(object,width,height,false);
 
@@ -73,7 +76,17 @@ public class GameObject {
             pos_X = pos_X - x_amount + 10;
         }
 
+
+
+        if(Game.moveUp == true && Game.moveRight == false && Game.moveLeft ==false)
+        {
+           pos_Y = pos_Y - y_amount + 5;
+        }
+        if(Game.moveUp == true && (Game.moveLeft || Game.moveRight))
+            pos_Y = pos_Y + 2;
+
         if(Player.isMovingDown == true && player.player_y() > 210)
-            pos_Y = pos_Y - y_amount;
+            pos_Y = pos_Y - y_amount - 5;
+
     }
 }

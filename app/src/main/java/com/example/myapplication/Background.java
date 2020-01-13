@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 public class Background {
 
@@ -83,9 +84,10 @@ public class Background {
         {
 
                 y = y - y_amount;
-
-
+            Log.d("my_tag", "update_bakground: y ->" +y);
         }
+
+
 
 
 
