@@ -9,6 +9,8 @@ import android.util.Log;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.example.myapplication.Game.chair1;
+import static com.example.myapplication.Game.divan1;
 import static com.example.myapplication.R.drawable.*;
 
 public class Player {
@@ -18,12 +20,12 @@ public class Player {
     //????
     private int nr_i_vektorit = 0;
     private  final int tolerance_range=-37;//Marzh gabimi
-    private final int tolerance_rangeY=2;
+    private final int tolerance_rangeY=10;
     /*********************Pas Kesaj Punon*******************************************************/
 
-    private final int gravity=10;
+    private final float gravity=10;
     private int velocityY=80;
-    private int finalPosY=0;
+    private float finalPosY=0;
     private int holding;
     private boolean finishjumping=true;
 
@@ -93,12 +95,12 @@ public class Player {
         if(this.pos_Y+height<800  && !checkObjcollisionDown(gameObject))
         {
             jumpCount=1;
-            pos_Y = pos_Y + gravity;
+            pos_Y = pos_Y + gravity*50/_spriteSheet.fps;
             _spriteSheet.set_Y_pos(pos_Y);
             set_player_y(pos_Y);
 
 
-            finalPosY=((int)pos_Y-((velocityY*velocityY)/(2*gravity)));
+            finalPosY=(pos_Y-((velocityY*velocityY)/(2*gravity)));
 
         }
         /*
@@ -124,40 +126,41 @@ public class Player {
     */
     public  void move_right(GameObject gameObject[],int X_velocity,float angle)
     {
-        Log.d("my_tag", "ACCELERATION: " + this.acceleration);
 
-        if(!checkObjcollisionRight(gameObject))
-        {
+            this.pos_X = this.pos_X + 20;
 
-            this.pos_X = this.pos_X + (float)(X_velocity/(int)_spriteSheet.fps*Math.cos(Math.toRadians((double)angle)));
-            //this.pos_Y = this.pos_Y - (float)(100/(int)_spriteSheet.fps*Math.sin(Math.toRadians((double)angle)));
             _spriteSheet.set_X_pos(this.pos_X);
-            //_spriteSheet.set_X_pos(this.pos_Y);
 
-        }
+
+
     }
     public  void  move_left(final GameObject gameObject[],int X_velocity)
     {
 
-        if(!checkObjcollisionLeft(gameObject))
-        {
 
-            this.pos_X = this.pos_X - X_velocity/(int)_spriteSheet.fps;
+            this.pos_X = this.pos_X - 20;
             _spriteSheet.set_X_pos(this.pos_X);
 
-        }
+
     }
     public void my_jump(GameObject gameObject[])
     {
 
-                this.pos_Y = this.pos_Y - _velocityY / _spriteSheet.fps;
-                _spriteSheet.set_Y_pos(this.pos_Y);
+                if(!checkObjcollisionUp(gameObject))
+                {
+                    this.pos_Y = this.pos_Y - 800/_spriteSheet.fps;
+                    _spriteSheet.set_Y_pos(this.pos_Y);
+                }
+        Log.d("Y_POS : ",String.valueOf(this.pos_Y));
+        Log.d("X_POS : ",String.valueOf(this.pos_X));
 
     }
     public  void move_up_right(GameObject gameObject[])
     {
                 my_jump(gameObject);
                 move_right(gameObject,_velocityX,0);
+                GameObject.X_offset_value = 5;
+
 
     }
     public  void move_up_left(GameObject gameObject[])
@@ -204,13 +207,14 @@ public class Player {
 
 
         //Draw anim
-        _spriteSheet.wheretoDraw().set((int)this.pos_X,(int)this.pos_Y,(int)this.pos_X  + _spriteSheet.width(),(int)this.pos_Y + _spriteSheet.height());
+        //_spriteSheet.wheretoDraw().set((int)this.pos_X,(int)this.pos_Y,(int)this.pos_X  + _spriteSheet.width(),(int)this.pos_Y + _spriteSheet.height());
 
         //draw every frame on screen
-        _spriteSheet.manageCurrentFrame();
+        //_spriteSheet.manageCurrentFrame();
 
         //nuk e vizaton gjitheimazhin per nje pjese te saj
-        canvas.drawBitmap(this.sprite,_spriteSheet.frametoDraw(),_spriteSheet.wheretoDraw(),null);
+        //canvas.drawBitmap(this.sprite,_spriteSheet.frametoDraw(),_spriteSheet.wheretoDraw(),null);
+        canvas.drawBitmap(this.sprite,this.pos_X + Camera.offset_X,this.pos_Y + Camera.offset_Y,null);
 
 
     }
@@ -249,11 +253,9 @@ public class Player {
         else if(Game.moveUp == true && Game.moveRight == false && Game.moveLeft == false)
         {
             //jump();
-
-            this.pos_Y = this.pos_Y - 1200 / _spriteSheet.fps;
-            _spriteSheet.set_Y_pos(pos_Y);
+            my_jump(gameObject);
         }
-        else if(Game.moveRight == true && Game.moveUp == false) {
+        else if(Game.moveRight == true && Game.moveUp == false ) {
             if(this.drawable_image != left_to_right)
             {
                 _spriteSheet.setCurrentframe(13);
@@ -269,7 +271,7 @@ public class Player {
 
         }
 
-        else if(Game.moveLeft == true && Game.moveUp == false) {
+        else if(Game.moveLeft == true && Game.moveUp == false && !checkObjcollisionLeft(gameObject)) {
 
             if(this.drawable_image != left_to_right)
             {
@@ -280,14 +282,7 @@ public class Player {
             }
 
             move_left(gameObject,100);
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    // this code will be executed after 2 seconds
-                    Log.d("my_tag", "AFTER 2 seconds : LEFT ");
-                    move_left(gameObject,350);
-                }
-            }, 5000);
+
         }
         else if(Game.moveRight == false && Game.moveLeft == false && Game.moveUp == false)
         {
@@ -301,7 +296,7 @@ public class Player {
             }
         }
 
-        fall(gameObject);
+        //fall(gameObject);
         }
 
 
@@ -309,16 +304,14 @@ public class Player {
     /*******************************Deri Ketu Funksiononte**********************************/
 
     /*******************************OBJECT COLLISON CHECK ******************************************************/
-    public boolean checkleft(GameObject a)
+    public boolean checkleft( GameObject a )
     {
-        if(((this.pos_X <= (a.Object_X() + a.getWidth() + tolerance_range)) || ((this.pos_X + tolerance_range) > a.Object_X())) && (((this.pos_Y + this.height) > a.Object_Y()) || (this.pos_Y < (a.Object_Y() + a.getHeight()))))
-            return true;
-        return false;
+        return this.pos_X <= (a.Object_X() + a.getWidth() + tolerance_range) && ((this.pos_X + tolerance_range) > a.Object_X()) && (this.pos_Y + this.height) > a.Object_Y() && this.pos_Y < (a.Object_Y() + a.getHeight());
     }
 
     public boolean checkright(GameObject a)
     {
-        return (this.pos_X + this.width + tolerance_range) > a.Object_X() && ((this.pos_X) <= a.Object_X() + tolerance_range) && (this.pos_Y + this.height) > a.Object_Y() && this.pos_Y < (a.Object_Y() + a.getHeight());
+        return (this.pos_X + this.trueWidth + tolerance_range) > a.Object_X() && ((this.pos_X) <= a.Object_X() + tolerance_range) && (this.pos_Y + this.height) > a.Object_Y() && this.pos_Y < (a.Object_Y() + a.getHeight());
     }
 
     public boolean checkup(GameObject a)
@@ -346,8 +339,7 @@ public class Player {
     public boolean checkObjcollisionLeft(GameObject [] a )
     {
         for(int i=0;i<a.length;i++){nr_i_vektorit=i;
-            if(checkleft(a[i])){
-                return true;}}
+            if(checkleft(a[i])){return true;}}
 
         return false;
     }
@@ -356,6 +348,7 @@ public class Player {
     {
         for(int i=0;i<a.length;i++){nr_i_vektorit=i;
             if(checkup(a[i])){return true;}}
+
         return false;
     }
 
@@ -373,4 +366,6 @@ public class Player {
         isMovingDown = true;
         return false;
     }
+
+
 }

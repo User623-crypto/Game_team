@@ -6,19 +6,25 @@ import android.graphics.BitmapFactory;
 
 public class GameObject {
 
-    private int pos_X;
-    private int pos_Y;
+    private float original_X_POS;
+    private float original_Y_POS;
+    private float pos_X;
+    private float pos_Y;
     private  int width;
     private int height;
 
+    static  float X_offset_value = 0;
+    static  float Y_offset_value = 0;
     private int drawable;
 
 
     Bitmap object;
     //Constructor;
 
-    public  GameObject(int _X, int _Y, int _width, int _height, Resources res,int _drawable)
+    public  GameObject(float _X, float _Y, int _width, int _height, Resources res,int _drawable)
     {
+        this.original_X_POS = _X;
+        this.original_Y_POS = _Y;
         this.pos_X = _X;
         this.pos_Y = _Y;
         this.width = _width;
@@ -32,32 +38,32 @@ public class GameObject {
 
     }
 
-    public int Object_X()
+    public float Original_X()
+    {
+        return original_X_POS;
+    }
+    public  float Original_Y()
+    {
+        return  original_Y_POS;
+    }
+
+
+    public float Object_X()
     {
         return  pos_X;
 
     }
-    public  int Object_Y()
+    public  float Object_Y()
     {
         return  pos_Y;
     }
-    public  void move_right()
-    {
-        pos_X +=10;//Leviz me te njejten madhesi me background
 
-    }
-    public  void  move_left()
+    static float Object_X(GameObject object)
     {
-        pos_X -=15;
+        return object.Object_X();
     }
-    public  void  move_up()
-    {
-        pos_Y -=5;
-    }
-    public  void  move_down()
-    {
-        pos_Y +=5;
-    }
+
+
 
     public int getWidth() {
         return width;
@@ -67,25 +73,26 @@ public class GameObject {
         return height;
     }
 
-    public void update_object(int x_amount,int y_amount,Player player)
+    public void update_object(float x_amount,int y_amount,Player player)
     {
         if(Game.moveRight == true) {
-            pos_X = pos_X - x_amount - 10;
+            pos_X = pos_X - x_amount ;
+
         }
-        if(Game.moveLeft == true) {
-            pos_X = pos_X - x_amount + 10;
+        else if(Game.moveLeft == true) {
+            pos_X = pos_X - x_amount;
         }
 
 
 
-        if(Game.moveUp == true && Game.moveRight == false && Game.moveLeft ==false)
+        else if(Game.moveUp == true && Game.moveRight == false && Game.moveLeft ==false)
         {
            pos_Y = pos_Y - y_amount + 5;
         }
-        if(Game.moveUp == true && (Game.moveLeft || Game.moveRight))
+        else if(Game.moveUp == true && (Game.moveLeft || Game.moveRight))
             pos_Y = pos_Y + 2;
 
-        if(Player.isMovingDown == true && player.player_y() > 210)
+        else if(Player.isMovingDown == true && player.player_y() > 210)
             pos_Y = pos_Y - y_amount - 5;
 
     }

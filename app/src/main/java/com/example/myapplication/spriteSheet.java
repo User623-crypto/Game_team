@@ -9,7 +9,6 @@ import static com.example.myapplication.Game.moveUp;
 
 public class spriteSheet {
     //Sprite sheet
-    private boolean isMoving;
     private float runSpeedPerSecond = 200;
     private float Xpos;//poszicioni i x ku nis levizja
     private float Ypos;//poszicioni i y ku nis levizja
@@ -17,7 +16,7 @@ public class spriteSheet {
     private int frameWidth ,frameHeight;
     private int frameCount; //Ndahet  Spritesheet ne 12 pjese te barabarta
     private int currentFrame;
-    public long fps;
+    static long fps;
     private long timeThisFrame;
     private long lastFrameChangeTime = 0;
     private int frameLengthinMillisecond = 40; //Shpejtesia e levizjes se objektit . P.sh Levizin me shpejt kembet

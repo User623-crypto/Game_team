@@ -3,11 +3,12 @@ package com.example.myapplication;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.util.Log;
 
 public class Background {
 
-    public int x = 0;
+    public float x = 0;
     public int y = 0;
 
     public  int _drawable;
@@ -21,7 +22,7 @@ public class Background {
 
     //drawble variable set image name...
 
-    Background(int screenX, int screenY, Resources res,int _drawable)
+    Background(int screenX, int screenY, Resources res, int _drawable)
     {
 
 
@@ -41,7 +42,12 @@ public class Background {
 
     }
 
-    public int background_X()
+    public void  draw_background(Canvas canvas)
+    {
+        canvas.drawBitmap(this.my_background,this.x + Camera.offset_X,this.y + Camera.offset_Y,null);
+    }
+
+    public   float background_X()
     {
         return x;
     }
