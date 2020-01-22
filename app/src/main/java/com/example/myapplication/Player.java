@@ -17,6 +17,8 @@ public class Player {
 
     //
     int testCount=0;
+    float runtime=0;float changetime=0;
+    float runSpeed=60/10;//shpejtesia
     /*************************************Pjesa e Perplasjes***********************************/
     //????
     private int nr_i_vektorit = 0;
@@ -229,8 +231,8 @@ public class Player {
         long time=System.currentTimeMillis();
 
         if(time-System.currentTimeMillis()<40) {
-            if (testCount > 60)
-                testCount = 0;
+           /* if (testCount > 60){
+                testCount = 0;}*/
             testCount++;
             if (Game.moveRight == true && Game.moveUp == true) {
                 if (this.drawable_image != jumpanim) {
@@ -263,19 +265,15 @@ public class Player {
                 this.drawable_image = left_to_right;
                // make_decode(res,drawable_image);
             }*/
-            /*if(testCount%3==0) {
+            if(testCount>runSpeed) {
                 if (row < 23)
                     row++;
                 else {
                     row = 13;
                 }
+                testCount=0;
 
-            }*/
-                if (row < 23)
-                    row++;
-                else {
-                    row = 13;
-                }
+            }
 
                 move_right(gameObject, 100, 30);
 
