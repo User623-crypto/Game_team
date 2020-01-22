@@ -90,11 +90,11 @@ public class Game extends SurfaceView  implements Runnable{
 
 
         //set size and location of player
-        player_animation =  new spriteSheet(100, 300, 80, 140, 24);
+        player_animation =  new spriteSheet(2981, 151, 24, R.drawable.left_to_right, 1,getResources());
 
 
 
-        my_player = new Player((int)player_animation.X_pos(),(int)player_animation.Y_pos(), player_animation.width(),player_animation.height(),getResources(),R.drawable.chair3_front,player_animation);//Frame count duhet .
+        my_player = new Player(100,300, player_animation);//Frame count duhet .
 
         object_array = new GameObject[] {divan1,chair1,chair2};
         paint = new Paint();
@@ -109,21 +109,32 @@ public class Game extends SurfaceView  implements Runnable{
 
     @Override
     public void run() {
-
+        long lastTime=System.nanoTime();
+        double nanoSecondConversion=1000000000.0/60;//60 frames per second
+        double changeInSeconds=0;
         while(isPlaying)
         {
-            long startFrameTime = System.currentTimeMillis();
+            long now=System.nanoTime();
+            changeInSeconds +=(now-lastTime)/nanoSecondConversion;
+            //long startFrameTime = System.currentTimeMillis();
             //Log.d("Y_POS : ",String.valueOf(my_player.player_y()));
            /*
             Log.d("Y_POS : ",String.valueOf(my_player.player_y()));
             Log.d("X_POS : ",String.valueOf(my_player.player_x()));
             */
 
-            update();
+            while(changeInSeconds>=1)
+            {
+                update();
+                changeInSeconds=0;
+            }
+
+
             draw();
+            lastTime=now;
             //sleep();
             //fps = 1000/csdfsdfgdf   Percakto  fps ne run
-            player_animation.on_run(startFrameTime);
+            //player_animation.on_run(startFrameTime);
 
         }
     }
@@ -141,7 +152,7 @@ public class Game extends SurfaceView  implements Runnable{
 
 
     private  void update() {
-        Log.d("sdfgdg", "width: " + screenX);
+       // Log.d("sdfgdg", "width: " + screenX);
         float before_posX = my_player.player_x();
         float before_posY = my_player.player_y();
 
@@ -160,28 +171,43 @@ public class Game extends SurfaceView  implements Runnable{
         */
 
         //Log.d("POSX", "divan1" + divan1.Object_X(divan1));
-        my_player.playerUpdate(object_array,getResources());
+        my_player.playerUpdate(object_array);
 
         if(moveLeft)
         {
-            if(my_player.player_x()%screenX < screenX/5)
+            if((my_player.player_x() > (Camera.offset_X) + 4*screenX/5))
             {
-                Camera.change_left_offset(4);
+
+                if(Camera.offset_X+screenX<5000)
+                    Camera.change_left_offset(25);}
+            else
+            {
+
+                    Camera.change_left_offset(15);
+
             }
+           // if(my_player.player_x()%screenX < screenX/5)
+            //{
+
+           /* }
             if(my_player.player_x()%screenX > screenX/5 && my_player.player_x()%screenX < 4*screenX/5)
             {
                 Camera.change_left_offset(5);
-            }
+            }*/
         }
 
         else if(moveRight)
         {
-            if((my_player.player_x() > (Camera.offset_X) + 4*screenX/5) && my_player.player_x() < screenX)
+            Log.d("two",  "Pozicioni x: "+String.valueOf(my_player.player_x())+" ");
+            if((my_player.player_x() > (Camera.offset_X) + 4*screenX/5))
+            {
 
-                Camera.change_right_offset(30);
+            if(Camera.offset_X+screenX<5000)
+            Camera.change_right_offset(25);}
 
             else if(my_player.player_x() - Camera.offset_X > 0)
             {
+                if(Camera.offset_X+screenX<5000)
                 Camera.change_right_offset(15);
 
             }
@@ -226,7 +252,7 @@ public class Game extends SurfaceView  implements Runnable{
 
             for(int i = 0;i<object_array.length;i++)
 
-                canvas.drawBitmap(object_array[i].object,object_array[i].Object_X() + Camera.offset_X,object_array[i].Object_Y() + Camera.offset_Y,paint);
+                canvas.drawBitmap(object_array[i].object,object_array[i].Object_X() - Camera.offset_X,object_array[i].Object_Y() - Camera.offset_Y,paint);
 
 
 

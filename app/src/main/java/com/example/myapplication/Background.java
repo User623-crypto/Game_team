@@ -44,7 +44,7 @@ public class Background {
 
     public void  draw_background(Canvas canvas)
     {
-        canvas.drawBitmap(this.my_background,this.x + Camera.offset_X,this.y + Camera.offset_Y,null);
+        canvas.drawBitmap(this.my_background,this.x - Camera.offset_X,this.y - Camera.offset_Y,null);
     }
 
     public   float background_X()

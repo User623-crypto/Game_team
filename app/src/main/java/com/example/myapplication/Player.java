@@ -15,7 +15,8 @@ import static com.example.myapplication.R.drawable.*;
 
 public class Player {
 
-
+    //
+    int testCount=0;
     /*************************************Pjesa e Perplasjes***********************************/
     //????
     private int nr_i_vektorit = 0;
@@ -52,30 +53,30 @@ public class Player {
     Bitmap sprite;
     int drawable_image; // Spritesheeti si imazh
     private spriteSheet _spriteSheet;
+    private Bitmap spriteShow;
+    private int row=13;
+    private int col=0;
 
-    public Player(float _X, float _Y, int width, int height, Resources res, int drawable_image,spriteSheet my_spriteSheet)
+
+    public Player(float _X, float _Y, spriteSheet my_spriteSheet)
     {
         this.pos_X = _X;
         this.pos_Y = _Y;
-        this.width = width;
-        this.height = height;
-        this.trueWidth=width/24;
-        this.drawable_image = drawable_image;
+
+       this.width=my_spriteSheet.width();
+       this.height=my_spriteSheet.height();
 
         this._spriteSheet = my_spriteSheet;
-        this.trueWidth = width/_spriteSheet.framecount();
-
-        make_decode(res,drawable_image);
+        //spriteShow=this._spriteSheet.returnSprite(13,0);
 
 
-        this.holding = (int)pos_Y;
 
     }
-    public  void make_decode(Resources res,int drawable_image)
+    /*public  void make_decode(Resources res,int drawable_image)
     {
         sprite = BitmapFactory.decodeResource(res,drawable_image);
         sprite = Bitmap.createScaledBitmap(sprite,width,height,false);
-    }
+    }*/
 
 
     public int playerTruewidth()
@@ -96,7 +97,7 @@ public class Player {
         {
             jumpCount=1;
             pos_Y = pos_Y + gravity*50/_spriteSheet.fps;
-            _spriteSheet.set_Y_pos(pos_Y);
+
             set_player_y(pos_Y);
 
 
@@ -127,9 +128,14 @@ public class Player {
     public  void move_right(GameObject gameObject[],int X_velocity,float angle)
     {
 
+        if(!checkObjcollisionRight(gameObject))
+        {
             this.pos_X = this.pos_X + 20;
 
-            _spriteSheet.set_X_pos(this.pos_X);
+        }
+
+
+
 
 
 
@@ -139,7 +145,7 @@ public class Player {
 
 
             this.pos_X = this.pos_X - 20;
-            _spriteSheet.set_X_pos(this.pos_X);
+
 
 
     }
@@ -148,11 +154,10 @@ public class Player {
 
                 if(!checkObjcollisionUp(gameObject))
                 {
-                    this.pos_Y = this.pos_Y - 800/_spriteSheet.fps;
-                    _spriteSheet.set_Y_pos(this.pos_Y);
+                    this.pos_Y = this.pos_Y - 5;
+
                 }
-        Log.d("Y_POS : ",String.valueOf(this.pos_Y));
-        Log.d("X_POS : ",String.valueOf(this.pos_X));
+
 
     }
     public  void move_up_right(GameObject gameObject[])
@@ -214,89 +219,90 @@ public class Player {
 
         //nuk e vizaton gjitheimazhin per nje pjese te saj
         //canvas.drawBitmap(this.sprite,_spriteSheet.frametoDraw(),_spriteSheet.wheretoDraw(),null);
-        canvas.drawBitmap(this.sprite,this.pos_X + Camera.offset_X,this.pos_Y + Camera.offset_Y,null);
+        canvas.drawBitmap(_spriteSheet.returnSprite(row,col),this.pos_X - Camera.offset_X,this.pos_Y - Camera.offset_Y,null);
 
 
     }
 
-    public void playerUpdate(final GameObject gameObject[], Resources res)
+    public void playerUpdate(final GameObject gameObject[])
     {
+        long time=System.currentTimeMillis();
 
-        if(Game.moveRight == true && Game.moveUp == true)
-        {
-            if(this.drawable_image != jumpanim)
-            {
-                setcurrentframe(12);
-                _spriteSheet.set_frameLengthinMillisecond(65);
-                this.drawable_image = R.drawable.jumpanim;
-                make_decode(res,drawable_image);
-            }
+        if(time-System.currentTimeMillis()<40) {
+            if (testCount > 60)
+                testCount = 0;
+            testCount++;
+            if (Game.moveRight == true && Game.moveUp == true) {
+                if (this.drawable_image != jumpanim) {
+                    setcurrentframe(12);
+                    _spriteSheet.set_frameLengthinMillisecond(65);
+                    this.drawable_image = R.drawable.jumpanim;
+                    // make_decode(res,drawable_image);
+                }
 
-            move_up_right(gameObject);
+                move_up_right(gameObject);
 
-        }
+            } else if (Game.moveLeft == true && Game.moveUp == true) {
+                if (this.drawable_image != jumpanim) {
+                    _spriteSheet.setCurrentframe(11);
+                    _spriteSheet.set_frameLengthinMillisecond(55);
+                    this.drawable_image = R.drawable.jumpanim;
 
-        else if(Game.moveLeft == true && Game.moveUp == true)
-        {
-            if(this.drawable_image != jumpanim)
-            {
-                _spriteSheet.setCurrentframe(11);
-                _spriteSheet.set_frameLengthinMillisecond(55);
-                this.drawable_image = R.drawable.jumpanim;
+                    //make_decode(res,drawable_image);
+                }
 
-                make_decode(res,drawable_image);
-            }
-
-            move_up_left(gameObject);
-        }
-
-        else if(Game.moveUp == true && Game.moveRight == false && Game.moveLeft == false)
-        {
-            //jump();
-            my_jump(gameObject);
-        }
-        else if(Game.moveRight == true && Game.moveUp == false ) {
-            if(this.drawable_image != left_to_right)
+                move_up_left(gameObject);
+            } else if (Game.moveUp == true && Game.moveRight == false && Game.moveLeft == false) {
+                //jump();
+                my_jump(gameObject);
+            } else if (Game.moveRight == true && Game.moveUp == false) {
+            /*if(this.drawable_image != left_to_right)
             {
                 _spriteSheet.setCurrentframe(13);
                 _spriteSheet.set_frameLengthinMillisecond(40);
                 this.drawable_image = left_to_right;
-                make_decode(res,drawable_image);
+               // make_decode(res,drawable_image);
+            }*/
+            /*if(testCount%3==0) {
+                if (row < 23)
+                    row++;
+                else {
+                    row = 13;
+                }
+
+            }*/
+                if (row < 23)
+                    row++;
+                else {
+                    row = 13;
+                }
+
+                move_right(gameObject, 100, 30);
+
+
+            } else if (Game.moveLeft == true && Game.moveUp == false && !checkObjcollisionLeft(gameObject)) {
+
+                if (this.drawable_image != left_to_right) {
+                    _spriteSheet.setCurrentframe(11);
+                    _spriteSheet.set_frameLengthinMillisecond(40);
+                    this.drawable_image = left_to_right;
+                    //make_decode(res,drawable_image);
+                }
+
+                move_left(gameObject, 100);
+
+            } else if (Game.moveRight == false && Game.moveLeft == false && Game.moveUp == false) {
+                acceleration = 1;
+                if (this.drawable_image != left_to_right) {
+                    _spriteSheet.setCurrentframe(11);
+                    _spriteSheet.set_frameLengthinMillisecond(40);
+                    this.drawable_image = left_to_right;
+                    //make_decode(res,drawable_image);
+                }
             }
 
-            move_right(gameObject,100,30);
-
-
-
-
+            //fall(gameObject);
         }
-
-        else if(Game.moveLeft == true && Game.moveUp == false && !checkObjcollisionLeft(gameObject)) {
-
-            if(this.drawable_image != left_to_right)
-            {
-                _spriteSheet.setCurrentframe(11);
-                _spriteSheet.set_frameLengthinMillisecond(40);
-                this.drawable_image = left_to_right;
-                make_decode(res,drawable_image);
-            }
-
-            move_left(gameObject,100);
-
-        }
-        else if(Game.moveRight == false && Game.moveLeft == false && Game.moveUp == false)
-        {
-            acceleration = 1;
-            if(this.drawable_image != left_to_right)
-            {
-                _spriteSheet.setCurrentframe(11);
-                _spriteSheet.set_frameLengthinMillisecond(40);
-                this.drawable_image = left_to_right;
-                make_decode(res,drawable_image);
-            }
-        }
-
-        //fall(gameObject);
         }
 
 
