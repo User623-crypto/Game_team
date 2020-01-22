@@ -1,5 +1,8 @@
 package com.example.myapplication;
 
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
@@ -14,7 +17,8 @@ public class spriteSheet {
     private float Ypos;//poszicioni i y ku nis levizja
     //public static int frameWidth = 180,frameHeight = 260;
     private int frameWidth ,frameHeight;
-    private int frameCount; //Ndahet  Spritesheet ne 12 pjese te barabarta
+    private int frameCountX; //Ndahet  Spritesheet ne 12 pjese te barabarta
+    private int frameCountY;
     private int currentFrame;
     static long fps;
     private long timeThisFrame;
@@ -26,53 +30,48 @@ public class spriteSheet {
 
     //Poicioni se ku do shfaqet frama
     private RectF wheretoDraw;
-
-    public  spriteSheet(float x_pos,float y_pos,int frame_width,int frame_height,int frameCount)
+    private int drawable;
+    private int width,height;
+    //SpriteSheeti
+    Bitmap spriteSheet;
+    public  spriteSheet(int frame_width, int frame_height, int frameCountX, int drawable, int frameCountY, Resources res)
 
     {
-        this.Xpos = x_pos;
-        this.Ypos = y_pos;
+
         this.frameWidth = frame_width;
         this.frameHeight = frame_height;
-        this.frameCount = frameCount;
-        frametoDraw = new Rect(0,0,frameWidth,frameHeight);
-        wheretoDraw = new RectF(Xpos,Ypos,Xpos+frameWidth,frameHeight);
+        this.frameCountX = frameCountX;
+        this.frameCountY=frameCountY;
+        //frametoDraw = new Rect(0,0,frameWidth,frameHeight);
+        //wheretoDraw = new RectF(Xpos,Ypos,Xpos+frameWidth,frameHeight);
+         this.width=frameWidth/frameCountX;
+         this.height=frameHeight/frameCountY;
+        spriteSheet = BitmapFactory.decodeResource(res,drawable);
+        spriteSheet = Bitmap.createScaledBitmap(spriteSheet,frameWidth,frameHeight,false);
+
+
+
     }
 
-    public float X_pos()
+    public Bitmap returnSprite(int a,int b)
     {
-        return  Xpos;
-
-    }
-    public float Y_pos()
-    {
-        return  Ypos;
-
+        return Bitmap.createBitmap(spriteSheet,(width*a),(height*b),this.width,this.height);
     }
 
-    public void set_X_pos(float _x)
-    {
-        Xpos = _x;
 
-    }
-    public void  set_Y_pos(float _y)
-    {
-        Ypos = _y;
-
-    }
     public int height()
     {
-        return  frameHeight;
+        return  height;
 
     }
     public int width()
     {
-        return  frameWidth;
+        return  width;
 
     }
-    public  int framecount()
+    public  int framecountX()
     {
-        return  frameCount;
+        return  frameCountX;
     }
     public void  set_frameLengthinMillisecond(int frame_speed)
     {
@@ -92,72 +91,52 @@ public class spriteSheet {
         }
     }
 
-    public Rect frametoDraw()
-    {
-        return frametoDraw;
-    }
-    public  RectF wheretoDraw()
-    {
-        return  wheretoDraw;
-    }
+
     public void manageCurrentFrame()
     {
 
         long time = System.currentTimeMillis();
-        if(moveLeft != false || moveRight != false)
+        if (time > lastFrameChangeTime + frameLengthinMillisecond)
         {
-            if(time > lastFrameChangeTime + frameLengthinMillisecond)
-            {
-                lastFrameChangeTime = time;
-                if(Game.moveRight == true && moveUp == false)
-                {
+            lastFrameChangeTime = time;
+        if(moveLeft != false || moveRight != false) {
+
+
+                if (Game.moveRight == true && moveUp == false) {
                     currentFrame++;
-                    if(currentFrame >= frameCount)
-                    {
+                    if (currentFrame >= frameCountX) {
                         currentFrame = 12;
 
                     }
-                }
-
-                else if(Game.moveLeft == true && moveUp == false)
-                {
+                } else if (Game.moveLeft == true && moveUp == false) {
                     currentFrame--;
-                    if(currentFrame < 1)
-                    {
+                    if (currentFrame < 1) {
                         currentFrame = 11;
 
                     }
-                }
-
-                else if(Game.moveUp && Game.moveRight == true)
-                {
+                } else if (Game.moveUp && Game.moveRight == true) {
 
                     currentFrame++;
 
-                    if(currentFrame >=frameCount)
-                    {
+                    if (currentFrame >= frameCountX) {
                         currentFrame = 13;
                         moveUp = false;
 
                     }
-                }
-
-                else if(Game.moveUp == true && Game.moveLeft == true)
-                {
+                } else if (Game.moveUp == true && Game.moveLeft == true) {
 
                     currentFrame--;
-                    if(currentFrame < 1)
-                    {
+                    if (currentFrame < 1) {
                         currentFrame = 11;
                         moveUp = false;
 
                     }
                 }
 
+
             }
+
         }
-
-
         frametoDraw.left = currentFrame*frameWidth;
 
         frametoDraw.right = frametoDraw.left + frameWidth;
