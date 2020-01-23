@@ -12,9 +12,7 @@ import static com.example.myapplication.Game.moveUp;
 
 public class spriteSheet {
     //Sprite sheet
-    private float runSpeedPerSecond = 200;
-    private float Xpos;//poszicioni i x ku nis levizja
-    private float Ypos;//poszicioni i y ku nis levizja
+
     //public static int frameWidth = 180,frameHeight = 260;
     private int frameWidth ,frameHeight;
     private int frameCountX; //Ndahet  Spritesheet ne 12 pjese te barabarta
@@ -24,38 +22,49 @@ public class spriteSheet {
     private long timeThisFrame;
     private long lastFrameChangeTime = 0;
     private int frameLengthinMillisecond = 40; //Shpejtesia e levizjes se objektit . P.sh Levizin me shpejt kembet
-    //Percakton size e frames qe do te merret
+
 
     private Rect frametoDraw ;//Ku fillon ndarja e framave. Eshte frame qe shfaqet qe shohim ne.nese e vendos psh top : 200 ath zdhuket
 
     //Poicioni se ku do shfaqet frama
     private RectF wheretoDraw;
     private int drawable;
-    private int width,height;
+    int width,height;
     //SpriteSheeti
     Bitmap spriteSheet;
-    public  spriteSheet(int frame_width, int frame_height, int frameCountX, int drawable, int frameCountY, Resources res)
+      public spriteSheet(int frame_width, int frame_height, int frameCountX,int frameCountY, int drawable,Resources res)
 
     {
-
         this.frameWidth = frame_width;
         this.frameHeight = frame_height;
         this.frameCountX = frameCountX;
         this.frameCountY=frameCountY;
-        //frametoDraw = new Rect(0,0,frameWidth,frameHeight);
-        //wheretoDraw = new RectF(Xpos,Ypos,Xpos+frameWidth,frameHeight);
-         this.width=frameWidth/frameCountX;
-         this.height=frameHeight/frameCountY;
+         width=frameWidth/frameCountX;
+         height=frameHeight/frameCountY;
         spriteSheet = BitmapFactory.decodeResource(res,drawable);
         spriteSheet = Bitmap.createScaledBitmap(spriteSheet,frameWidth,frameHeight,false);
 
 
 
     }
+    public spriteSheet(int width, int height, int frameCountX,int frameCountY,int drawable,Resources res,boolean a)
+    {
+        this.frameCountX = frameCountX;
+        this.frameCountY=frameCountY;
+        this.width=width;
+        this.height=height;
+        this.frameWidth=this.width*frameCountX;
+        this.frameHeight=this.height*frameCountY;
+        spriteSheet = BitmapFactory.decodeResource(res,drawable);
+        spriteSheet = Bitmap.createScaledBitmap(spriteSheet,frameWidth,frameHeight,false);
+    }
+
+
+
 
     public Bitmap returnSprite(int a,int b)
     {
-        return Bitmap.createBitmap(spriteSheet,(width*a),(height*b),this.width,this.height);
+        return Bitmap.createBitmap(spriteSheet,(width*a),(height*b),width,height);
     }
 
 

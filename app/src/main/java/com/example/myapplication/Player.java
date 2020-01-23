@@ -15,14 +15,19 @@ import static com.example.myapplication.R.drawable.*;
 
 public class Player {
 
-    //
+    /*******************Ne Varesi te imazhit te lojtarit**************/
+    int leftPadding=50;
+    int rightPadding=40;
+    int upPadding=0;
+    int downPadding=10;
+    /****************************Animim*//////////////////////////////
     int testCount=0;
     float runtime=0;float changetime=0;
-    float runSpeed=60/10;//shpejtesia
+    float runSpeed=60/40;//shpejtesia
     /*************************************Pjesa e Perplasjes***********************************/
     //????
     private int nr_i_vektorit = 0;
-    private  final int tolerance_range=-37;//Marzh gabimi
+    private  final int tolerance_range=10;//Marzh gabimi
     private final int tolerance_rangeY=10;
     /*********************Pas Kesaj Punon*******************************************************/
 
@@ -38,7 +43,7 @@ public class Player {
     private boolean didMoveLeft=false;
     private int jumpCount=0;
 
-    private int _velocityX=130;
+    private int _velocityX=20;
     private int _velocityY = 700;
     static float acceleration = 1;
     static float move_angle = 0;
@@ -47,7 +52,6 @@ public class Player {
     private float pos_Y;
     private int width;
     private int height;
-    private int trueWidth;
 
     private Game gameview;
 
@@ -56,7 +60,7 @@ public class Player {
     int drawable_image; // Spritesheeti si imazh
     private spriteSheet _spriteSheet;
     private Bitmap spriteShow;
-    private int row=13;
+    private int row=12;
     private int col=0;
 
 
@@ -69,20 +73,30 @@ public class Player {
        this.height=my_spriteSheet.height();
 
         this._spriteSheet = my_spriteSheet;
-        //spriteShow=this._spriteSheet.returnSprite(13,0);
-
 
 
     }
+    public Player(float _X, float _Y,int width,int height,Resources res)
+    {
+        this.pos_X = _X;
+        this.pos_Y = _Y;
+        this.width=width;
+        this.height=height;
+        this._spriteSheet = new spriteSheet(width, height, 24,  1,R.drawable.left_to_right,res,true);//124
+
+
+    }
+    private float imgBoundR(){return pos_X+width-rightPadding;}
+    private float imgBoundL(){return pos_X+leftPadding;}
+    private float imgBoundU(){return pos_Y+upPadding;}
+    private float imgBoundD(){return pos_Y+height-downPadding;}
+
     /*public  void make_decode(Resources res,int drawable_image)
     {
         sprite = BitmapFactory.decodeResource(res,drawable_image);
         sprite = Bitmap.createScaledBitmap(sprite,width,height,false);
     }*/
 
-
-    public int playerTruewidth()
-    {return trueWidth;}
 
     public boolean didMoveRight()
     {
@@ -98,9 +112,9 @@ public class Player {
         if(this.pos_Y+height<800  && !checkObjcollisionDown(gameObject))
         {
             jumpCount=1;
-            pos_Y = pos_Y + gravity*50/_spriteSheet.fps;
+            pos_Y +=gravity ;
 
-            set_player_y(pos_Y);
+
 
 
             finalPosY=(pos_Y-((velocityY*velocityY)/(2*gravity)));
@@ -145,8 +159,12 @@ public class Player {
     public  void  move_left(final GameObject gameObject[],int X_velocity)
     {
 
-
+        if(!checkObjcollisionLeft(gameObject))
+        {
             this.pos_X = this.pos_X - 20;
+
+        }
+
 
 
 
@@ -156,7 +174,7 @@ public class Player {
 
                 if(!checkObjcollisionUp(gameObject))
                 {
-                    this.pos_Y = this.pos_Y - 5;
+                    this.pos_Y = this.pos_Y - 20;
 
                 }
 
@@ -178,11 +196,11 @@ public class Player {
 
     public int player_width()
     {
-        return _spriteSheet.width();
+        return width;
     }
     public int player_height()
     {
-        return _spriteSheet.height();
+        return height;
     }
 
 
@@ -194,19 +212,9 @@ public class Player {
     {
         return pos_Y;
     }
-    public  void set_player_x(float _x)
-    {
-        this.pos_X = _x;
-    }
-    public  void  set_player_y(float _y)
-    {
-        this.pos_Y = _y;
-    }
 
-    public  void setcurrentframe(int frame)
-    {
-        _spriteSheet.setCurrentframe(frame);
-    }
+
+
 
 
     public void draw(Canvas canvas)
@@ -228,19 +236,14 @@ public class Player {
 
     public void playerUpdate(final GameObject gameObject[])
     {
-        long time=System.currentTimeMillis();
 
-        if(time-System.currentTimeMillis()<40) {
+
            /* if (testCount > 60){
                 testCount = 0;}*/
             testCount++;
             if (Game.moveRight == true && Game.moveUp == true) {
-                if (this.drawable_image != jumpanim) {
-                    setcurrentframe(12);
-                    _spriteSheet.set_frameLengthinMillisecond(65);
-                    this.drawable_image = R.drawable.jumpanim;
-                    // make_decode(res,drawable_image);
-                }
+
+
 
                 move_up_right(gameObject);
 
@@ -266,42 +269,61 @@ public class Player {
                // make_decode(res,drawable_image);
             }*/
             if(testCount>runSpeed) {
-                if (row < 23)
-                    row++;
-                else {
-                    row = 13;
-                }
+                animatePlayerRight();
                 testCount=0;
 
             }
 
-                move_right(gameObject, 100, 30);
+                move_right(gameObject, 20, 30);
 
 
-            } else if (Game.moveLeft == true && Game.moveUp == false && !checkObjcollisionLeft(gameObject)) {
+            } else if (Game.moveLeft == true && Game.moveUp == false ) {
 
-                if (this.drawable_image != left_to_right) {
-                    _spriteSheet.setCurrentframe(11);
-                    _spriteSheet.set_frameLengthinMillisecond(40);
-                    this.drawable_image = left_to_right;
-                    //make_decode(res,drawable_image);
+                if(testCount>runSpeed) {
+                    animatePlayerLeft();
+                    testCount=0;
+
                 }
 
-                move_left(gameObject, 100);
+                move_left(gameObject, 20);
 
-            } else if (Game.moveRight == false && Game.moveLeft == false && Game.moveUp == false) {
-                acceleration = 1;
-                if (this.drawable_image != left_to_right) {
-                    _spriteSheet.setCurrentframe(11);
-                    _spriteSheet.set_frameLengthinMillisecond(40);
-                    this.drawable_image = left_to_right;
-                    //make_decode(res,drawable_image);
-                }
+            } else if (!Game.moveRight && !Game.moveLeft  && !Game.moveUp ) {
+                if(row>=12)
+                    row=12;
+                else{row=11;}
+
             }
 
-            //fall(gameObject);
+            fall(gameObject);
         }
+
+
+        /********************Animimi****************************************/
+        private void animatePlayerRight()
+        {
+            if(row<12)
+            {
+                row=12;
+            }
+            if (row < 23)
+                row++;
+            else {
+                row = 12;
+            }
         }
+        private void animatePlayerLeft()
+        {
+            if(row>11)
+                row=11;
+            if(row>0)
+            {row--;}
+            else{
+                row=11;
+            }
+
+        }
+
+
 
 
 
@@ -310,23 +332,23 @@ public class Player {
     /*******************************OBJECT COLLISON CHECK ******************************************************/
     public boolean checkleft( GameObject a )
     {
-        return this.pos_X <= (a.Object_X() + a.getWidth() + tolerance_range) && ((this.pos_X + tolerance_range) > a.Object_X()) && (this.pos_Y + this.height) > a.Object_Y() && this.pos_Y < (a.Object_Y() + a.getHeight());
+        return imgBoundL() <= (a.Object_X() + a.getWidth() + tolerance_range) && (imgBoundR()-tolerance_range > a.Object_X()) && (imgBoundD())-tolerance_rangeY > a.Object_Y() && imgBoundU()+tolerance_rangeY < (a.Object_Y() + a.getHeight());
     }
 
     public boolean checkright(GameObject a)
     {
-        return (this.pos_X + this.trueWidth + tolerance_range) > a.Object_X() && ((this.pos_X) <= a.Object_X() + tolerance_range) && (this.pos_Y + this.height) > a.Object_Y() && this.pos_Y < (a.Object_Y() + a.getHeight());
+        return (imgBoundR() + tolerance_range) > a.Object_X() && (imgBoundL() <= a.Object_X()+a.getWidth()-tolerance_range) && (imgBoundD())-tolerance_rangeY > a.Object_Y() && imgBoundU()+tolerance_rangeY < (a.Object_Y() + a.getHeight());
     }
 
     public boolean checkup(GameObject a)
     {
-        return this.pos_Y <= (a.Object_Y() + a.getHeight() + tolerance_rangeY) && ((this.pos_Y + tolerance_rangeY) >= a.Object_Y()) && (this.pos_X + this.trueWidth) + tolerance_range - 5 > a.Object_X() && (this.pos_X) < (a.Object_X() + a.getWidth() + tolerance_range - 5);
+        return imgBoundU() <= (a.Object_Y() + a.getHeight() + tolerance_rangeY) && ((imgBoundD() - tolerance_rangeY) >= a.Object_Y()) && (imgBoundR()-tolerance_range > a.Object_X() && imgBoundL()+tolerance_range < (a.Object_X() + a.getWidth()));
     }
 
     public boolean checkdown(GameObject a)
     {
         /********************E RENDESISHME VLERA 5 ESHTE VLERE ABSURDE E DOMOSDOSHME QE RRIT TOLERANCEN NESE KA PROBLEM PERPLASJA DUHET ME U PARE**************************************/
-        if((this.pos_Y+this.height+tolerance_rangeY)>=(a.Object_Y()) && ((this.pos_Y)<=a.Object_Y()+tolerance_rangeY) && (this.pos_X+this.trueWidth)+tolerance_range-5>a.Object_X() && (this.pos_X)<(a.Object_X()+a.getWidth()+tolerance_range-5))
+        if((imgBoundD()+tolerance_rangeY)>=(a.Object_Y()) && ((imgBoundU())<=a.Object_Y()-tolerance_rangeY) && (imgBoundR()-tolerance_range>a.Object_X() && imgBoundL()+tolerance_range<(a.Object_X()+a.getWidth())))
             return true;
 
         return false;
