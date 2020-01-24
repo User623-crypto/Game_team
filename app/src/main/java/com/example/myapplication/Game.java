@@ -54,15 +54,15 @@ public class Game extends SurfaceView  implements Runnable{
         ratio_X = 1280f / screenX;
         ratio_Y = 720f / screenY;
 
-        background1 = new Background(1280,screenY,getResources(),R.drawable.game_background);
-        background2 = new Background(1280,screenY,getResources(),R.drawable.idle);
-        background3 = new Background(1280,screenY,getResources(),R.drawable.game_background);
+        background1 = new Background(screenX,screenY,getResources(),R.drawable.game_background);
+        background2 = new Background(screenX,screenY,getResources(),R.drawable.idle);
+        background3 = new Background(screenX,screenY,getResources(),R.drawable.game_background);
 
 
         background2.x = screenX;
         background3.x = 2*screenX;
 
-        my_wall = new GameObject(50,500,900,60,getResources(),R.drawable.wall);
+        my_wall = new GameObject(50/ratio_X,500/ratio_Y,900/ratio_X,60/ratio_Y,getResources(),R.drawable.wall);
         /*
         my_wall1 = new GameObject(950,300,900,60,getResources());
         my_wall2 = new GameObject(1850,500,900,60,getResources());
@@ -77,7 +77,7 @@ public class Game extends SurfaceView  implements Runnable{
          */
 
     //Enter divan
-        divan1 = new GameObject(50,500,400,200,getResources(),R.drawable.divan);
+        divan1 = new GameObject(50/ratio_X,500/ratio_Y,400/ratio_X,200/ratio_Y,getResources(),R.drawable.divan);
         chair1 = new GameObject(400,400,120,100,getResources(),R.drawable.chair3_front);
         chair2 = new GameObject(40,400,120,100,getResources(),R.drawable.chair3_front);
 
@@ -177,40 +177,25 @@ public class Game extends SurfaceView  implements Runnable{
         {
             if(my_player.player_x()%screenX < screenX/5)
             {
-                Camera.change_left_offset(4);
+                Camera.change_right_offset(4);
             }
             if(my_player.player_x()%screenX > screenX/5 && my_player.player_x()%screenX < 4*screenX/5)
             {
-                Camera.change_left_offset(5);
+                Camera.change_right_offset(5);
             }
-           // if(my_player.player_x()%screenX < screenX/5)
-            //{
-
-           /* }
-            if(my_player.player_x()%screenX > screenX/5 && my_player.player_x()%screenX < 4*screenX/5)
-            {
-                Camera.change_left_offset(5);
-            }*/
         }
 
         else if(moveRight)
         {
-            if((my_player.player_x() > (Camera.offset_X) + 4*screenX/5) && my_player.player_x() < screenX)
+            if((my_player.player_x() > (-Camera.offset_X) + 4*screenX/5) && my_player.player_x() < (-Camera.offset_X + screenX))
 
-                Camera.change_right_offset(20);
+                Camera.change_left_offset(5);
 
             else if(my_player.player_x() - Camera.offset_X > 0)
             {
-                Camera.change_right_offset(20);
+                Camera.change_left_offset(5);
 
             }
-           /*
-            if(my_player.player_x()%screenX  > screenX/5 && my_player.player_x()%screenX  < 4*screenX/5)
-            {
-                Camera.change_right_offset(10);
-            }
-            */
-
         }
 
     }

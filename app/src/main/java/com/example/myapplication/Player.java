@@ -17,6 +17,11 @@ public class Player {
 
     //
     int testCount=0;
+    float runtime=0;float changetime=0;
+    float runSpeed=60/30;//shpejtesia
+
+    private long lastFrameChangeTime = 0;
+    private int frameLengthinMillisecond = 40;
     /*************************************Pjesa e Perplasjes***********************************/
     //????
     private int nr_i_vektorit = 0;
@@ -54,9 +59,6 @@ public class Player {
     int drawable_image; // Spritesheeti si imazh
     private spriteSheet _spriteSheet;
     private Bitmap spriteShow;
-    private long timeThisFrame = 0;
-    private long lastFrameChangeTime = 0;
-    private int frameLengthinMillisecond = 40;
     private int row=13;
     private int col=0;
 
@@ -133,7 +135,7 @@ public class Player {
 
         if(!checkObjcollisionRight(gameObject))
         {
-            this.pos_X = this.pos_X + 20;
+            this.pos_X = this.pos_X + 5;
 
         }
 
@@ -232,8 +234,9 @@ public class Player {
         long time=System.currentTimeMillis();
 
         if(time > lastFrameChangeTime + frameLengthinMillisecond) {
-            if (testCount > 60)
-                testCount = 0;
+           /* if (testCount > 60){
+                testCount = 0;}*/
+           lastFrameChangeTime = time;
             testCount++;
             if (Game.moveRight == true && Game.moveUp == true) {
                 if (this.drawable_image != jumpanim) {
@@ -266,21 +269,17 @@ public class Player {
                 this.drawable_image = left_to_right;
                // make_decode(res,drawable_image);
             }*/
-            /*if(testCount%3==0) {
+            //if(testCount>runSpeed) {
                 if (row < 23)
                     row++;
                 else {
                     row = 13;
-                }
+                //}
+                testCount=0;
 
-            }*/
-                if (row < 23)
-                    row++;
-                else {
-                    row = 13;
-                }
+            }
 
-                move_right(gameObject, 100, 30);
+                move_right(gameObject, 20, 30);
 
 
             } else if (Game.moveLeft == true && Game.moveUp == false && !checkObjcollisionLeft(gameObject)) {

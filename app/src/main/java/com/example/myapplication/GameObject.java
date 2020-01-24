@@ -10,8 +10,8 @@ public class GameObject {
     private float original_Y_POS;
     private float pos_X;
     private float pos_Y;
-    private  int width;
-    private int height;
+    private  float width;
+    private float height;
 
     static  float X_offset_value = 0;
     static  float Y_offset_value = 0;
@@ -21,7 +21,7 @@ public class GameObject {
     Bitmap object;
     //Constructor;
 
-    public  GameObject(float _X, float _Y, int _width, int _height, Resources res,int _drawable)
+    public  GameObject(float _X, float _Y, float _width, float _height, Resources res,int _drawable)
     {
         this.original_X_POS = _X;
         this.original_Y_POS = _Y;
@@ -33,7 +33,7 @@ public class GameObject {
         this.drawable = _drawable;
         object = BitmapFactory.decodeResource(res,drawable);
 
-        object = Bitmap.createScaledBitmap(object,width,height,false);
+        object = Bitmap.createScaledBitmap(object,(int)width,(int)height,false);
 
 
     }
@@ -65,11 +65,11 @@ public class GameObject {
 
 
 
-    public int getWidth() {
+    public float getWidth() {
         return width;
     }
 
-    public int getHeight() {
+    public float getHeight() {
         return height;
     }
 
