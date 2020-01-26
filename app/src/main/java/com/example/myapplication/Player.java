@@ -18,13 +18,14 @@ public class Player {
     int downPadding = 10;
     /****************************Animim*//////////////////////////////
     int testCount = 0;
-
+    float runtime=60/30f;float frameSpeed=60/30f; int frameCount=0; int normalCount=0; float frameSpeedR,frameSpeedL,frameSpeedUR,frameSpeedUL;
+    float runspeedR=frameSpeedR=60/30f; float runspeedL=frameSpeedL=60/40f; float runspeedUR=frameSpeedUR=60/40f; float runspeedUL=frameSpeedUL=60/40f;
     float runSpeed = 60 / 40;//shpejtesia
     /*************************************Pjesa e Perplasjes***********************************/
     //????
     private int nr_i_vektorit = 0;
-    private final int tolerance_range = 10;//Marzh gabimi
-    private final int tolerance_rangeY = 10;
+    private final int tolerance_range = 15;//Marzh gabimi
+    private final int tolerance_rangeY = 15;
     /*********************Pas Kesaj Punon*******************************************************/
 
 
@@ -218,40 +219,33 @@ public class Player {
             testCount++;
             if (Game.moveRight == true && Game.moveUp == true) {
 
-                animatePlayerUpRight();
+                animatePlayerUpRight1();
                 move_up_right(gameObject,20,20);
 
             } else if (Game.moveLeft == true && Game.moveUp == true) {
-                animatePlayerUpLeft();
+                animatePlayerUpLeft1();
                 move_up_left(gameObject,20,20);
             } else if (Game.moveUp == true && Game.moveRight == false && Game.moveLeft == false) {
                 //jump();
                 my_jump(gameObject, 15);
             } else if (Game.moveRight == true && Game.moveUp == false) {
 
-                if (testCount > runSpeed) {
-                    animatePlayerRight();
-                    testCount = 0;
-
-                }
+                animatePlayerRight1();
 
                 move_right(gameObject, 30);
 
 
             } else if (Game.moveLeft == true && Game.moveUp == false) {
 
-                if (testCount > runSpeed) {
-                    animatePlayerLeft();
-                    testCount = 0;
-
-                }
+                animatePlayerLeft1();
 
                 move_left(gameObject);
 
             } else if (!Game.moveRight && !Game.moveLeft && !Game.moveUp) {
                 row = 0;
                 col = 0;
-
+                frameCount=0;
+                normalCount=0;
             }
 
             fall(gameObject);
@@ -261,7 +255,6 @@ public class Player {
         /********************Animimi****************************************/
         private void animatePlayerRight ()
         {
-            runSpeed = 60 / 40;
             col = 0;
             if (row < 9) {
                 row++;
@@ -274,9 +267,32 @@ public class Player {
                 row = 0;
             }
         }
+
+        /*E rendesishme ka nevoje per limit */
+    private void animatePlayerRight1()
+    {
+        if(testCount>=runspeedR) {
+            frameCount++;
+            normalCount++;
+
+            if(frameCount*frameSpeedR<=normalCount)
+            {runspeedR=(int)frameSpeedR;}
+            else
+                runspeedR=frameSpeedR;
+
+            animatePlayerRight();
+            testCount=0;
+
+        }else
+        {
+            normalCount++;
+        }
+    }
+
+
         private void animatePlayerLeft ()
         {
-            runSpeed = 60 / 40;
+
             col = 1;
             if (row < 9) {
                 row++;
@@ -290,10 +306,30 @@ public class Player {
             }
 
         }
+    private void animatePlayerLeft1()
+    {
+        if(testCount>=runspeedL) {
+            frameCount++;
+            normalCount++;
 
-        private void animatePlayerUpRight ()
+            if(frameCount*frameSpeedL<=normalCount)
+            {runspeedL=(int)frameSpeedL;}
+            else
+                runspeedL=frameSpeedL;
+
+            animatePlayerLeft();
+            testCount=0;
+
+        }else
         {
-            runSpeed = 60 / 60;
+            normalCount++;
+        }
+    }
+
+
+    private void animatePlayerUpRight ()
+        {
+
             col = 2;
             if (row < 9) {
                 row++;
@@ -310,9 +346,29 @@ public class Player {
             }
         }
 
+    private void animatePlayerUpRight1()
+    {
+        if(testCount>=runspeedUR) {
+            frameCount++;
+            normalCount++;
+
+            if(frameCount*frameSpeedUR<=normalCount)
+            {runspeedUR=(int)frameSpeedUR;}
+            else
+                runspeedUR=frameSpeedUR;
+
+            animatePlayerUpRight();
+            testCount=0;
+
+        }else
+        {
+            normalCount++;
+        }
+    }
+
         private void animatePlayerUpLeft ()
         {
-            runSpeed = 60 / 30;
+
             col = 3;
             if (row < 9) {
                 row++;
@@ -326,6 +382,25 @@ public class Player {
                 row = 0;
             }
         }
+    private void animatePlayerUpLeft1()
+    {
+        if(testCount>=runspeedUL) {
+            frameCount++;
+            normalCount++;
+
+            if(frameCount*frameSpeedUL<=normalCount)
+            {runspeedUL=(int)frameSpeedUL;}
+            else
+                runspeedUL=frameSpeedUL;
+
+            animatePlayerUpLeft();
+            testCount=0;
+
+        }else
+        {
+            normalCount++;
+        }
+    }
 
 
 
