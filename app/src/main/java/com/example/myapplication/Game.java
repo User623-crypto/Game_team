@@ -15,7 +15,8 @@ public class Game extends SurfaceView  implements Runnable{
     private Thread game_thread;
     private boolean isPlaying;
     static float screenX;
-    public int screenY;
+    static int screenY;
+    static int scene_height;
     private Paint paint;
 
     //Per te bere te pershtatshem per size te ndryshme
@@ -31,8 +32,7 @@ public class Game extends SurfaceView  implements Runnable{
     private Player my_player;
 
     //Create object
-    private GameObject my_wall,my_wall1,my_wall2,my_wall3,my_wall4,my_wall5,my_wall6,my_wall7,my_wall8,my_wall9;
-    static GameObject divan1,chair1,chair2;
+    static GameObject darkred_shelf,halfyellow_shelf,horizontal_shelf,horizontal_shelf1,grandfather_clock,second_table,under_clock,before_clock,blockelement,blockelement1,lamp,dinning_table,rightchair,overtable,overtable2,overtable3,floor,floor2,floor3;
     //Create an array to hold all object.
     GameObject[] object_array;
 
@@ -54,49 +54,58 @@ public class Game extends SurfaceView  implements Runnable{
         ratio_X = 1280f / screenX;
         ratio_Y = 720f / screenY;
 
-        background1 = new Background(screenX,screenY,getResources(),R.drawable.game_background);
-        background2 = new Background(screenX,screenY,getResources(),R.drawable.idle);
-        background3 = new Background(screenX,screenY,getResources(),R.drawable.game_background);
+        background1 = new Background(screenX,2*screenY,getResources(),R.drawable.game_background);
+        background2 = new Background(screenX,2*screenY,getResources(),R.drawable.idle);
+        background3 = new Background(screenX,2*screenY,getResources(),R.drawable.game_background);
 
-
+        scene_height = 2*screenY;
         background2.x = screenX;
         background3.x = 2*screenX;
 
-        my_wall = new GameObject(50/ratio_X,500/ratio_Y,900/ratio_X,60/ratio_Y,getResources(),R.drawable.wall);
-        /*
-        my_wall1 = new GameObject(950,300,900,60,getResources());
-        my_wall2 = new GameObject(1850,500,900,60,getResources());
-        my_wall3 = new GameObject(2800,500,900,60,getResources());
-        my_wall4 = new GameObject(3700,500,500,60,getResources());
-        my_wall5 = new GameObject(4250,500,50,60,getResources());
-        my_wall6 = new GameObject(4500,700,50,60,getResources());
 
-        my_wall7 = new GameObject(4700,300,150,60,getResources());
-        my_wall8 = new GameObject(5000,200,50,60,getResources());
-        my_wall9 = new GameObject(5400,500,500,60,getResources());
-         */
 
-    //Enter divan
-        divan1 = new GameObject(50/ratio_X,500/ratio_Y,400/ratio_X,200/ratio_Y,getResources(),R.drawable.divan);
-        chair1 = new GameObject(400,400,120,100,getResources(),R.drawable.chair3_front);
-        chair2 = new GameObject(40,400,120,100,getResources(),R.drawable.chair3_front);
 
+        floor = new GameObject(0,scene_height - 80/ratio_Y, screenX,50/ratio_Y,getResources(),R.drawable.wood1);
+        floor2 = new GameObject(screenX,floor.Object_Y(), screenX,50/ratio_Y,getResources(),R.drawable.wood1);
+        floor3 = new GameObject(2*screenX,floor.Object_Y(), screenX,50/ratio_Y,getResources(),R.drawable.wood1);
+        //All objects
+        darkred_shelf = new GameObject(0,scene_height - 700/ratio_Y, 40/ratio_X,350/ratio_Y,getResources(),R.drawable.shelf_darkred);
+        halfyellow_shelf = new GameObject(0,(darkred_shelf.Object_Y() - 580/ratio_Y)/ratio_Y, 100/ratio_X,400/ratio_Y,getResources(),R.drawable.shelf_halfyellow);
+        horizontal_shelf = new GameObject(100/ratio_X,(halfyellow_shelf.Object_Y())/ratio_Y, 150/ratio_X,30/ratio_Y,getResources(),R.drawable.shelf_halfyellow);
+        horizontal_shelf1 = new GameObject(100/ratio_X,(horizontal_shelf.Object_Y() + 170/ratio_Y)/ratio_Y, 150/ratio_X,30/ratio_Y,getResources(),R.drawable.shelf_halfyellow);
+        second_table = new GameObject(darkred_shelf.Object_X() + 160/ratio_X,floor.Object_Y() - 220/ratio_Y, 300/ratio_X,220/ratio_Y,getResources(),R.drawable.second_image);
+        lamp = new GameObject(second_table.Object_X() + second_table.getWidth() - 60/ratio_X,second_table.Object_Y() - 90/ratio_Y, 60/ratio_X,90/ratio_Y,getResources(),R.drawable.shelf_darkred);
+        under_clock = new GameObject(920/ratio_X,floor.Object_Y() - 80/ratio_Y, 320/ratio_X,80/ratio_Y,getResources(),R.drawable.grandfather_clock);
+        grandfather_clock = new GameObject(under_clock.Object_X() + 110/ratio_X,under_clock.Object_Y() - 500/ratio_Y, 90/ratio_X,500/ratio_Y,getResources(),R.drawable.grandfather_clock);
+        before_clock = new GameObject(720/ratio_X,floor.Object_Y() - 220/ratio_Y, 100/ratio_X,80/ratio_Y,getResources(),R.drawable.before_clock);
+        blockelement = new GameObject(grandfather_clock.Object_X() - 120/ratio_X,before_clock.Object_Y() - 140/ratio_Y, 120/ratio_X,40/ratio_Y,getResources(),R.drawable.before_clock);
+        blockelement1 = new GameObject(blockelement.Object_X() - 200/ratio_X,blockelement.Object_Y() - 140/ratio_Y, 120/ratio_X,40/ratio_Y,getResources(),R.drawable.before_clock);
+
+        dinning_table = new GameObject(1400/ratio_X,floor.Object_Y() - 380/ratio_Y, 800/ratio_X,380/ratio_Y,getResources(),R.drawable.dinning_table_final);
+        rightchair = new GameObject(dinning_table.Object_X() - 35/ratio_X,floor.Object_Y() - 375/ratio_Y, 160/ratio_X,375/ratio_Y,getResources(),R.drawable.rightchair);
+
+        //Over table
+        overtable = new GameObject(dinning_table.Object_X() + 250/ratio_X,dinning_table.Object_Y() - 80/ratio_Y , 300/ratio_X,80/ratio_Y,getResources(),R.drawable.wood1);
+        overtable2 = new GameObject(overtable.Object_X() + 100/ratio_X,overtable.Object_Y() - 80/ratio_Y , 200/ratio_X,80/ratio_Y,getResources(),R.drawable.wood1);
+        overtable3 = new GameObject(overtable2.Object_X() + 100/ratio_X,overtable2.Object_Y() - 80/ratio_Y , 100/ratio_X,80/ratio_Y,getResources(),R.drawable.wood1);
         //Shto buttonat
-        left_button = new Button(150,500,150,150,getResources(),R.drawable.leftarray);
-        right_button = new Button(380,500,150,150,getResources(),R.drawable.rightarray);
-        up_button = new Button(1000,500,150,150,getResources(),R.drawable.uparray);
-        down_button = new Button(1900,920,150,150,getResources(),R.drawable.downarray);
+        left_button = new Button((int)(100/ratio_X),(int)(screenY - 100/ratio_Y), (int) (100/ratio_X),(int)(100/ratio_Y),getResources(),R.drawable.leftarray);
+        right_button = new Button((int)(300/ratio_X),(int)(screenY - 100/ratio_Y),(int)(100/ratio_X), (int) (100/ratio_Y),getResources(),R.drawable.rightarray);
+        up_button = new Button((int)(screenX-400/ratio_X),(int)(screenY - 100/ratio_Y),(int)(100/ratio_X),(int)(100/ratio_Y),getResources(),R.drawable.uparray);
+        down_button = new Button((int)(screenX - 200/ratio_X),(int)(screenY - 100/ratio_Y),(int)(100/ratio_X),(int)(100/ratio_Y),getResources(),R.drawable.downarray);
         button_array = new Button[]{left_button,right_button,up_button,down_button};
 
 
         //set size and location of player
-        player_animation =  new spriteSheet(2981, 151, 24, R.drawable.left_to_right, 1,getResources());
+        //player_animation =  new spriteSheet(2981, 151, 10,4,R.drawable.player_sprite,getResources());//124
 
 
 
-        my_player = new Player(100,300, player_animation);//Frame count duhet .
+        my_player = new Player(240,100, (int)(124/ratio_X),(int)(151/ratio_Y),getResources());
+        // my_player= new Player(100,300,player_animation);
 
-        object_array = new GameObject[] {divan1,chair1,chair2};
+        object_array = new GameObject[] {floor,floor2,floor3,darkred_shelf,halfyellow_shelf,horizontal_shelf,horizontal_shelf1,grandfather_clock,second_table,under_clock,before_clock,blockelement,blockelement1,lamp,dinning_table,rightchair,overtable,overtable2,overtable3};
+        //darkred_shelf,halfyellow_shelf,horizontal_shelf,horizontal_shelf1,grandfather_clock,second_table,under_clock,before_clock,blockelement,blockelement1,lamp,dinning_table,rightchair,overtable,overtable2,overtable3,
         paint = new Paint();
     }
 
@@ -114,14 +123,9 @@ public class Game extends SurfaceView  implements Runnable{
         double changeInSeconds=0;
         while(isPlaying)
         {
+
             long now=System.nanoTime();
             changeInSeconds +=(now-lastTime)/nanoSecondConversion;
-            //long startFrameTime = System.currentTimeMillis();
-            //Log.d("Y_POS : ",String.valueOf(my_player.player_y()));
-           /*
-            Log.d("Y_POS : ",String.valueOf(my_player.player_y()));
-            Log.d("X_POS : ",String.valueOf(my_player.player_x()));
-            */
 
             while(changeInSeconds>=1)
             {
@@ -132,9 +136,6 @@ public class Game extends SurfaceView  implements Runnable{
 
             draw();
             lastTime=now;
-            //sleep();
-            //fps = 1000/csdfsdfgdf   Percakto  fps ne run
-            //player_animation.on_run(startFrameTime);
 
         }
     }
@@ -152,50 +153,26 @@ public class Game extends SurfaceView  implements Runnable{
 
 
     private  void update() {
-       // Log.d("sdfgdg", "width: " + screenX);
-        float before_posX = my_player.player_x();
-        float before_posY = my_player.player_y();
 
-
-
-        float after_posX = my_player.player_x();
-        float after_posY = my_player.player_y();
-
-        int X_amount = (int)(after_posX - before_posX);
-        int Y_amount = (int)(after_posY - before_posY);
-        //background1.update_bakground(X_amount,Y_amount,my_player);
-        //background2.update_bakground(X_amount,Y_amount,my_player);
-       /*
-        for(int i = 0;i<object_array.length;i++)
-            object_array[i].update_object(GameObject.X_offset_value,Y_amount,my_player);
-        */
-
-        //Log.d("POSX", "divan1" + divan1.Object_X(divan1));
         my_player.playerUpdate(object_array);
 
         if(moveLeft)
         {
-            if(my_player.player_x()%screenX < screenX/5)
-            {
-                Camera.change_right_offset(4);
-            }
-            if(my_player.player_x()%screenX > screenX/5 && my_player.player_x()%screenX < 4*screenX/5)
-            {
-                Camera.change_right_offset(5);
-            }
+          Camera.checkLeft(my_player);
+
         }
 
         else if(moveRight)
         {
-            if((my_player.player_x() > (-Camera.offset_X) + 4*screenX/5) && my_player.player_x() < (-Camera.offset_X + screenX))
 
-                Camera.change_left_offset(5);
+           Camera.checkRight(my_player);
 
-            else if(my_player.player_x() - Camera.offset_X > 0)
-            {
-                Camera.change_left_offset(5);
 
-            }
+        }
+
+        else if(moveUp)
+        {
+            Camera.checkUp(my_player);
         }
 
     }
@@ -205,28 +182,17 @@ public class Game extends SurfaceView  implements Runnable{
         if(getHolder().getSurface().isValid()) //if surface view is initiated
         {
             Canvas canvas = getHolder().lockCanvas();//return the current canvas displayed on the screen
-            //canvas.drawBitmap(background1.my_background,background1.x,background1.y,paint);
+
             background1.draw_background(canvas);
             background2.draw_background(canvas);
             background3.draw_background(canvas);
-            //canvas.drawBitmap(background2.my_background,background2.x,background2.y,paint);
 
 
-        //Draw anim
-/*
 
 
-            player_animation.manageCurrentFrame();
-            player_animation.wheretoDraw().set((int)player_animation.X_pos(),(int)player_animation.Y_pos(),(int)player_animation.X_pos() + my_player.player_width(),(int)player_animation.Y_pos() + my_player.player_height());
-            //draw every frame on screen
-
-            canvas.drawBitmap(my_player.sprite,player_animation.frametoDraw(),player_animation.wheretoDraw(),null);
- */
-
-//Draw i Roelit :)
             my_player.draw(canvas);
 
-            //draw wall
+
 
             for(int i = 0;i<object_array.length;i++)
 
