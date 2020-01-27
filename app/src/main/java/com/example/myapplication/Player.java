@@ -7,33 +7,40 @@ import android.graphics.Canvas;
 import android.util.Log;
 
 
+import com.example.myapplication.Forms.AABB;
+
+
 import static com.example.myapplication.R.drawable.*;
 
-public class Player {
+public class Player extends AABB {
 
     //
-    int leftPadding = 50;
+    int leftPadding = 20;
     int rightPadding = 40;
     int upPadding = 0;
     int downPadding = 10;
     /****************************Animim*//////////////////////////////
     int testCount = 0;
     float runtime=60/30f;float frameSpeed=60/30f; int frameCount=0; int normalCount=0; float frameSpeedR,frameSpeedL,frameSpeedUR,frameSpeedUL;
-    float runspeedR=frameSpeedR=60/30f; float runspeedL=frameSpeedL=60/40f; float runspeedUR=frameSpeedUR=60/40f; float runspeedUL=frameSpeedUL=60/40f;
+    float runspeedR=frameSpeedR=60/30f; float runspeedL=frameSpeedL=60/40f; float runspeedUR=frameSpeedUR=60/20f; float runspeedUL=frameSpeedUL=60/20f;
     float runSpeed = 60 / 40;//shpejtesia
     /*************************************Pjesa e Perplasjes***********************************/
     //????
     private int nr_i_vektorit = 0;
     private final int tolerance_range = 15;//Marzh gabimi
-    private final int tolerance_rangeY = 15;
+    private final int tolerance_rangeY = 8;
     /*********************Pas Kesaj Punon*******************************************************/
+    public boolean movedRight=false;
+    public boolean movedLeft=false;public boolean movedUp=false;public  boolean movedDown=false;
 
+
+    /*****************************************************************************************/
 
     private boolean didMoveRight = false;
     private boolean didMoveLeft = false;
 
-    private float pos_X;
-    private float pos_Y;
+    private float pos_X,nextPosX;
+    private float pos_Y,nextPosY;
     private int width;
     private int height;
     private int vSpeed = 0; /*Vertical speed needed  when jump*/
@@ -41,6 +48,8 @@ public class Player {
     private int x_acceleration = 2;
     private int hSpeed = 0; //horizontal speed
     private int maxSpeed = 20;
+    private float tempX;
+    private float tempY;
 
 
     static boolean isMovingDown;//Nese eshte duke rene
@@ -52,8 +61,9 @@ public class Player {
 
 
     public Player(float _X, float _Y, spriteSheet my_spriteSheet) {
-        this.pos_X = _X;
-        this.pos_Y = _Y;
+        super(_X,_Y,my_spriteSheet.width(),my_spriteSheet.height());
+        this.pos_X = nextPosX=_X;
+        this.pos_Y =nextPosY= _Y;
 
         this.width = my_spriteSheet.width();
         this.height = my_spriteSheet.height();
@@ -64,8 +74,9 @@ public class Player {
     }
 
     public Player(float _X, float _Y, int width, int height, Resources res) {
-        this.pos_X = _X;
-        this.pos_Y = _Y;
+        super(_X,_Y,width,height);
+        this.pos_X = nextPosX=_X;
+        this.pos_Y =nextPosY= _Y;
         this.width = width;
         this.height = height;
         this._spriteSheet = new spriteSheet(width, height, 10, 4, player_sprite, res, true);//124
@@ -74,19 +85,19 @@ public class Player {
     }
 
     private float imgBoundR() {
-        return pos_X + width - rightPadding;
+        return nextPosX + width - rightPadding;
     }
 
     private float imgBoundL() {
-        return pos_X + leftPadding;
+        return nextPosX + leftPadding;
     }
 
     private float imgBoundU() {
-        return pos_Y + upPadding;
+        return nextPosY + upPadding;
     }
 
     private float imgBoundD() {
-        return pos_Y + height - downPadding;
+        return nextPosY + height - downPadding;
     }
 /*
 
@@ -101,13 +112,23 @@ public class Player {
 
  */
     private void fall(GameObject gameObject[]) {
+        tempY=pos_Y;
+        nextPosY = pos_Y + vSpeed;
+        vSpeed = vSpeed + acceleration;
         if (this.pos_Y + height < (2 * Game.screenY) && !checkObjcollisionDown(gameObject)) {
-
-            pos_Y = pos_Y + vSpeed;
-            vSpeed = vSpeed + acceleration;
-
+                movedDown=true;
+            //pos_Y = pos_Y + vSpeed;
+           // vSpeed = vSpeed + acceleration;
+                pos_Y=nextPosY;
             if (!checkObjcollisionDown(gameObject))
                 Camera.checkDown(this);
+
+        }
+        else{
+            //tempY=gameObject[nr_i_vektorit].Object_Y()-height;
+            movedDown=false;
+            pos_Y=tempY;
+
 
         }
     }
@@ -115,29 +136,52 @@ public class Player {
 
         public void move_right (GameObject gameObject[] ,float angle)
         {
+                tempX=pos_X;
 
+            nextPosX = pos_X + hSpeed;
+            //nextPosX=pos_X;
+            if(hSpeed < maxSpeed)
+                hSpeed = hSpeed + x_acceleration;
             if (!checkObjcollisionRight(gameObject)) {
-                pos_X = pos_X + hSpeed;
+                movedRight=true;
+                /*pos_X = pos_X + hSpeed;
                 if(hSpeed < maxSpeed)
-                    hSpeed = hSpeed + x_acceleration;
-
+                    hSpeed = hSpeed + x_acceleration;*/
+              //  Log.d("tag", "Duhet te japi jo"+String.valueOf(!checkObjcollisionRight(gameObject)));
+                pos_X=nextPosX;
             }
             else{
+                Log.d("tag","duhet te japi po"+ String.valueOf(checkObjcollisionRight(gameObject)));
                 hSpeed = 0;
+                movedRight=false;
+                pos_X=tempX;
+                nextPosX=pos_X;
+
+
             }
 
         }
         public void move_left ( final GameObject gameObject[])
         {
-
+                tempX=pos_X;
+                nextPosX=pos_X;
+            //movedLeft=true;
+            nextPosX = pos_X - hSpeed;
+            //nextPosX=pos_X;
+            if(hSpeed < maxSpeed)
+                hSpeed = hSpeed + x_acceleration;
             if (!checkObjcollisionLeft(gameObject)) {
-                pos_X = pos_X - hSpeed;
+                movedLeft=true;
+               /* pos_X = pos_X - hSpeed;
                 if(hSpeed < maxSpeed)
-                    hSpeed = hSpeed + x_acceleration;
+                    hSpeed = hSpeed + x_acceleration;*/
+               pos_X=nextPosX;
 
             }
             else
             {
+                pos_X=tempX;
+                nextPosX=pos_X;
                 hSpeed = 0;
             }
 
@@ -145,11 +189,21 @@ public class Player {
         public void my_jump (GameObject gameObject[],int jumpHeight)
         {
 
+                tempY=pos_Y;
+            vSpeed = -jumpHeight;
+            nextPosY = pos_Y + vSpeed;
 
             if (!checkObjcollisionUp(gameObject) && checkObjcollisionDown(gameObject) == true) {
+                movedUp=true;
 
-                vSpeed = -jumpHeight;
-                pos_Y = pos_Y + vSpeed;
+               /* vSpeed = -jumpHeight;
+                pos_Y = pos_Y + vSpeed;*/
+               pos_Y=nextPosY;
+            }
+            else {
+                pos_Y=tempY;
+                nextPosY=pos_Y;
+
             }
 
         }
@@ -248,7 +302,7 @@ public class Player {
                 normalCount=0;
             }
 
-            fall(gameObject);
+             fall(gameObject);
         }
 
 
@@ -409,27 +463,49 @@ public class Player {
     /*******************************OBJECT COLLISON CHECK ******************************************************/
     public boolean checkleft( GameObject a )
     {
-        return imgBoundL() <= (a.Object_X() + a.getWidth() + tolerance_range) && (imgBoundR()-tolerance_range > a.Object_X()) && (imgBoundD())-tolerance_rangeY > a.Object_Y() && imgBoundU()+tolerance_rangeY < (a.Object_Y() + a.getHeight());
+        return imgBoundL() <= (a.Object_X() + a.getWidth()) && (imgBoundR() > a.Object_X()) && (imgBoundD()) > a.Object_Y() && imgBoundU() < (a.Object_Y() + a.getHeight());
     }
 
     public boolean checkright(GameObject a)
     {
-        return (imgBoundR() + tolerance_range) > a.Object_X() && (imgBoundL() <= a.Object_X()+a.getWidth()-tolerance_range) && (imgBoundD())-tolerance_rangeY > a.Object_Y() && imgBoundU()+tolerance_rangeY < (a.Object_Y() + a.getHeight());
+        return (imgBoundR()) >= a.Object_X() && (imgBoundL() < a.Object_X()+a.getWidth()) && (imgBoundD()) > a.Object_Y() && imgBoundU() < (a.Object_Y() + a.getHeight());
     }
 
     public boolean checkup(GameObject a)
     {
-        return imgBoundU() <= (a.Object_Y() + a.getHeight() + tolerance_rangeY) && ((imgBoundD() - tolerance_rangeY) >= a.Object_Y()) && (imgBoundR()-tolerance_range > a.Object_X() && imgBoundL()+tolerance_range < (a.Object_X() + a.getWidth()));
+        return imgBoundU() <= (a.Object_Y() + a.getHeight()) && ((imgBoundD()) > a.Object_Y()) && (imgBoundR() > a.Object_X() && imgBoundL() < (a.Object_X() + a.getWidth()));
     }
 
     public boolean checkdown(GameObject a)
     {
-        /********************E RENDESISHME VLERA 5 ESHTE VLERE ABSURDE E DOMOSDOSHME QE RRIT TOLERANCEN NESE KA PROBLEM PERPLASJA DUHET ME U PARE**************************************/
-        if((imgBoundD()+tolerance_rangeY)>=(a.Object_Y()) && ((imgBoundU())<=a.Object_Y()-tolerance_rangeY) && (imgBoundR()-tolerance_range>a.Object_X() && imgBoundL()+tolerance_range<(a.Object_X()+a.getWidth())))
+
+        if((imgBoundD())>=(a.Object_Y()) && ((imgBoundU())<a.Object_Y()) && (imgBoundR()>a.Object_X() && imgBoundL()<(a.Object_X()+a.getWidth())))
             return true;
 
         return false;
     }
+   /*public boolean checkleft(GameObject a)
+   {
+       return super.contains(a);
+   }
+    public boolean checkright(GameObject a)
+    {
+        if(super.contains(a))
+        {
+            Log.d("Objekti", "Pozicioni x,y: "+String.valueOf(a.Object_X())+","+String.valueOf(a.Object_Y())+" width+ height:"+String.valueOf(a.getWidth())+","+String.valueOf(a.getHeight()));
+            Log.d("Lojtari", "x y w h: "+String.valueOf(pos_X)+" "+String.valueOf(pos_Y)+" "+String.valueOf(width)+" "+String.valueOf(height)+" ");
+            return  true;
+        }else{return  false;}
+    }
+    public boolean checkup(GameObject a)
+    {
+        return super.contains(a);
+    }
+    public boolean checkdown(GameObject a)
+    {
+        return super.contains(a);
+    }*/
+
 
 
     public boolean checkObjcollisionRight(GameObject [] a )

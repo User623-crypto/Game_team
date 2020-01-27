@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 
+import com.example.myapplication.Forms.AABB;
+
 
 public class Game extends SurfaceView  implements Runnable{
 
@@ -101,7 +103,7 @@ public class Game extends SurfaceView  implements Runnable{
 
 
 
-        my_player = new Player(240,100, (int)(124/ratio_X),(int)(151/ratio_Y),getResources());
+        my_player = new Player(500,100, (int)(124/ratio_X),(int)(151/ratio_Y),getResources());
         // my_player= new Player(100,300,player_animation);
 
         object_array = new GameObject[] {floor,floor2,floor3,darkred_shelf,halfyellow_shelf,horizontal_shelf,horizontal_shelf1,grandfather_clock,second_table,under_clock,before_clock,blockelement,blockelement1,lamp,dinning_table,rightchair,overtable,overtable2,overtable3};
@@ -121,6 +123,7 @@ public class Game extends SurfaceView  implements Runnable{
         long lastTime=System.nanoTime();
         double nanoSecondConversion=1000000000.0/60;//60 frames per second
         double changeInSeconds=0;
+
         while(isPlaying)
         {
 
@@ -132,7 +135,7 @@ public class Game extends SurfaceView  implements Runnable{
                 update();
                 changeInSeconds=0;
             }
-
+            Log.d("tag3", "run: "+String.valueOf(my_player.contains(new AABB(0,1360,1384,80))));
 
             draw();
             lastTime=now;
@@ -158,13 +161,14 @@ public class Game extends SurfaceView  implements Runnable{
 
         if(moveLeft)
         {
+            if(didMove())
           Camera.checkLeft(my_player);
 
         }
 
         else if(moveRight)
         {
-
+            if (didMove())
            Camera.checkRight(my_player);
 
 
@@ -172,6 +176,7 @@ public class Game extends SurfaceView  implements Runnable{
 
         else if(moveUp)
         {
+            if (didMove())
             Camera.checkUp(my_player);
         }
 
@@ -275,5 +280,11 @@ public class Game extends SurfaceView  implements Runnable{
         return  true;
 
     }
+
+    public boolean didMove()
+    {
+        return my_player.movedDown||my_player.movedRight||my_player.movedUp||my_player.movedLeft;
+    }
+
 
 }

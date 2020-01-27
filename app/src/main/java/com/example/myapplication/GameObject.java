@@ -4,7 +4,9 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-public class GameObject {
+import com.example.myapplication.Forms.AABB;
+
+public class GameObject extends AABB {
 
     private float original_X_POS;
     private float original_Y_POS;
@@ -23,6 +25,7 @@ public class GameObject {
 
     public  GameObject(float _X, float _Y, float _width, float _height, Resources res,int _drawable)
     {
+        super(_X,_Y,_width,_height);
         this.original_X_POS = _X;
         this.original_Y_POS = _Y;
         this.pos_X = _X;
